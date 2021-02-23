@@ -1,14 +1,20 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 import './App.css';
-import Capture from './components/capture';
+import PatientRegistration from './components/patientRegistration/PatientRegistration';
 
 function App() {
-  function handleClick(){
-
-  }
   return (
     <div className="App">
-      <Capture />
+      <Router>
+        <Switch>
+          <Route exact path="/" component={PatientRegistration} />
+        </Switch>
+      </Router>
     </div>
   );
 }

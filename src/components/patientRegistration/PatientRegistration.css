@@ -1,0 +1,64 @@
+.container-registration {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+    padding-right: 5rem;
+    padding-left: 5rem;
+    background-image: linear-gradient(80deg, #1990ea 36%, #bfdbf1 36%);
+}
+
+.navbar-image {
+    height: 5rem;
+    width: auto;
+    position: absolute;
+    top: 1rem;
+    left: 5rem;
+}
+
+.navbar-registration {
+    position: absolute;
+    top: 3rem;
+    right: 6rem;
+    display: inline-flex;
+    color: black;
+}
+
+.content-registration {
+    background-color: #ffffff;
+    border: 0.7rem solid #bfdbf1;
+    color: #555555;
+    padding: 1.5rem;
+}
+
+.patient-registration-image {
+    width: 8rem;
+    height: 8rem;
+    display: inline-block;
+    border-radius: 50%;
+    position: relative;
+    right: 26.8rem;
+}
+
+.click-photo-button {
+    position: relative;
+    top: 2.3rem;
+    right: 34.8rem;
+}
+
+.aadhar-otp {
+    position: relative;
+    text-align: left;
+    bottom: 10rem;
+    left: 20rem;
+    width: 50rem;
+}
+
+.form-container-registration {
+    border: 1px solid #B8B8B8;
+    margin-top: -8.5rem;
+    padding: 1rem 1rem 8rem 1rem;
+}
+
+.patient-details {
+    padding: 1rem;
+    background-color: #F1F2F4;
+}
