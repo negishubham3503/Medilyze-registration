@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import './PatientRegistration.css';
 import Logo from '../../images/logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Webcam from "react-webcam";
 import { Button, Grid, Typography, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, InputLabel, Select, MenuItem, Input, Checkbox } from "@material-ui/core";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -11,9 +11,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function PatientRegistration() {
+    const { login, logout, getUID } = useAuth()
     const webcamRef = useRef(null);
+    const [error, setError] = useState("")
     const [open, setOpen] = useState(false);
     const [gender, setGender] = useState('female');
     const [maritalStatus, setMaritalStatus] = useState('unmarried');
@@ -21,6 +24,7 @@ export default function PatientRegistration() {
     const [occupation, setOccupation] = useState('');
     const [state, setState] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
+    const history = useHistory()
     const [imgSrc, setImgSrc] = useState("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg");
     const videoConstraints = {
         width: 400,
@@ -62,9 +66,17 @@ export default function PatientRegistration() {
         setState(event.target.value);
     }
 
-    function handleLogout() {
+    async function handleLogout() {
+        setError("")
 
+        try {
+            await logout()
+            history.push("/")
+        } catch {
+            setError("Failed to log out")
+        }
     }
+
     return (
         <div className="container-registration">
             <img src={Logo} alt="navbar" className="navbar-image" />
