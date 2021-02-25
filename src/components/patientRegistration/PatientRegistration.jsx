@@ -20,7 +20,7 @@ export default function PatientRegistration() {
     const [bg, setBG] = useState('');
     const [occupation, setOccupation] = useState('');
     const [state, setState] = useState("");
-    const [authenticated, setAuthenticated] = useState(true);
+    const [authenticated, setAuthenticated] = useState(false);
     const [imgSrc, setImgSrc] = useState("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg");
     const videoConstraints = {
         width: 400,
