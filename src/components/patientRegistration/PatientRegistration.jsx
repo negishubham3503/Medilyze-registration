@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import './PatientRegistration.css';
 import Logo from '../../images/logo.png';
 import { Link } from 'react-router-dom';
@@ -11,10 +11,16 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { fetchRegistrarName } from "../../contexts/FirestoreContext";
+import { useAuth } from "../../contexts/AuthContext";
+
+
 
 export default function PatientRegistration() {
     const webcamRef = useRef(null);
     const [open, setOpen] = useState(false);
+    const [doctorName, setDoctorName] = useState("")
+    const { login, logout, getUID } = useAuth()
     const [gender, setGender] = useState('female');
     const [maritalStatus, setMaritalStatus] = useState('unmarried');
     const [bg, setBG] = useState('');
@@ -27,10 +33,18 @@ export default function PatientRegistration() {
         height: 400,
         facingMode: "user"
     };
-    const stateList = [ "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram","Nagaland", "Odisha","Punjab", "Rajasthan","Sikkim", "Tamil Nadu","Telangana", "Tripura","Uttarakhand", "Uttar Pradesh","West Bengal", "Andaman and Nicobar Islands","Chandigarh", "Dadra and Nagar Haveli","Daman and Diu", "Delhi","Lakshadweep", "Puducherry"];
+    const stateList = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", "Lakshadweep", "Puducherry"];
 
+    useEffect(() => {
+        async function fetchData() {
+            const UID = getUID();
+            const name = await fetchRegistrarName(UID);
+            setDoctorName(name)
+        }
+        fetchData();
+    }, [doctorName])
     const handleCapture = useCallback(() => {
-        const imageSrc = webcamRef.current.getScreenshot({width: 400, height: 400});
+        const imageSrc = webcamRef.current.getScreenshot({ width: 400, height: 400 });
         setImgSrc(imageSrc);
     }, [webcamRef, setImgSrc]);
 
@@ -70,8 +84,8 @@ export default function PatientRegistration() {
             <img src={Logo} alt="navbar" className="navbar-image" />
             <div className="navbar-registration">
                 <AccountCircleIcon />
-                <Typography style={{marginRight: "2.5rem", marginLeft: "0.5rem"}}>
-                    admin
+                <Typography style={{ marginRight: "2.5rem", marginLeft: "0.5rem" }}>
+                    {doctorName}
                 </Typography>
                 <Typography>
                     <Link to="/" onClick={handleLogout}>Logout</Link>
@@ -93,7 +107,7 @@ export default function PatientRegistration() {
                             ref={webcamRef}
                             videoConstraints={videoConstraints}
                             screenshotFormat="image/jpeg"
-                            style={{position: "relative", left: "4.5rem"}}
+                            style={{ position: "relative", left: "4.5rem" }}
                         />
                     </DialogContent>
                     <DialogActions>
@@ -106,7 +120,7 @@ export default function PatientRegistration() {
                     </DialogActions>
                 </Dialog>
                 <div className="aadhar-otp">
-                    <Typography variant="h4" style={{margin: "1rem", color: "#1990EA"}}>
+                    <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
                         Personal Identity
                     </Typography>
                     <Grid container spacing={6}>
@@ -179,7 +193,7 @@ export default function PatientRegistration() {
                                         defaultValue="2017-05-24"
                                         size="small"
                                         InputLabelProps={{
-                                          shrink: true,
+                                            shrink: true,
                                         }}
                                     />
                                 </Grid>
@@ -211,19 +225,19 @@ export default function PatientRegistration() {
                                             value={bg}
                                             onChange={handleBGChange}
                                             label="Blood Group"
-                                            style={{textAlign: "left"}}
+                                            style={{ textAlign: "left" }}
                                         >
-                                        <MenuItem value="">
-                                            <em>None</em>
-                                        </MenuItem>
-                                        <MenuItem value={'A+'}>A+</MenuItem>
-                                        <MenuItem value={'B+'}>B+</MenuItem>
-                                        <MenuItem value={'AB+'}>AB+</MenuItem>
-                                        <MenuItem value={'O+'}>O+</MenuItem>
-                                        <MenuItem value={'A-'}>A-</MenuItem>
-                                        <MenuItem value={'B-'}>B-</MenuItem>
-                                        <MenuItem value={'AB-'}>AB-</MenuItem>
-                                        <MenuItem value={'O-'}>O-</MenuItem>
+                                            <MenuItem value="">
+                                                <em>None</em>
+                                            </MenuItem>
+                                            <MenuItem value={'A+'}>A+</MenuItem>
+                                            <MenuItem value={'B+'}>B+</MenuItem>
+                                            <MenuItem value={'AB+'}>AB+</MenuItem>
+                                            <MenuItem value={'O+'}>O+</MenuItem>
+                                            <MenuItem value={'A-'}>A-</MenuItem>
+                                            <MenuItem value={'B-'}>B-</MenuItem>
+                                            <MenuItem value={'AB-'}>AB-</MenuItem>
+                                            <MenuItem value={'O-'}>O-</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -236,19 +250,19 @@ export default function PatientRegistration() {
                                             value={occupation}
                                             onChange={handleOccupationChange}
                                             label="Select Occupation"
-                                            style={{textAlign: "left"}}
+                                            style={{ textAlign: "left" }}
                                         >
-                                        <MenuItem value="">
-                                            <em>None</em>
-                                        </MenuItem>
-                                        <MenuItem value={'Armed Forces'}>Armed Forces</MenuItem>
-                                        <MenuItem value={'Farmer'}>Farmer</MenuItem>
-                                        <MenuItem value={'Student'}>Student</MenuItem>
-                                        <MenuItem value={'Teacher'}>Teacher</MenuItem>
-                                        <MenuItem value={'A-'}>A-</MenuItem>
-                                        <MenuItem value={'B-'}>B-</MenuItem>
-                                        <MenuItem value={'AB-'}>AB-</MenuItem>
-                                        <MenuItem value={'Other'}>Other</MenuItem>
+                                            <MenuItem value="">
+                                                <em>None</em>
+                                            </MenuItem>
+                                            <MenuItem value={'Armed Forces'}>Armed Forces</MenuItem>
+                                            <MenuItem value={'Farmer'}>Farmer</MenuItem>
+                                            <MenuItem value={'Student'}>Student</MenuItem>
+                                            <MenuItem value={'Teacher'}>Teacher</MenuItem>
+                                            <MenuItem value={'A-'}>A-</MenuItem>
+                                            <MenuItem value={'B-'}>B-</MenuItem>
+                                            <MenuItem value={'AB-'}>AB-</MenuItem>
+                                            <MenuItem value={'Other'}>Other</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -274,7 +288,7 @@ export default function PatientRegistration() {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Typography variant="h4" style={{margin: "1rem", color: "#1990EA"}}>
+                        <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
                             Medical History
                         </Typography>
                         <div className="patient-details">
@@ -286,7 +300,7 @@ export default function PatientRegistration() {
                                 variant="outlined"
                             />
                         </div>
-                        <Typography variant="h4" style={{margin: "1rem", color: "#1990EA"}}>
+                        <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
                             Contact Details
                         </Typography>
                         <div className="patient-details">
@@ -346,12 +360,12 @@ export default function PatientRegistration() {
                                             value={state}
                                             onChange={handleStateChange}
                                             label="State / UT"
-                                            style={{textAlign: "left"}}
+                                            style={{ textAlign: "left" }}
                                         >
-                                        <MenuItem value="">
-                                            <em>Select</em>
-                                        </MenuItem>
-                                        {stateList.map((state) => <MenuItem value={state}>{state}</MenuItem>)}
+                                            <MenuItem value="">
+                                                <em>Select</em>
+                                            </MenuItem>
+                                            {stateList.map((state) => <MenuItem value={state}>{state}</MenuItem>)}
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -402,14 +416,14 @@ export default function PatientRegistration() {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Typography variant="h5" style={{margin: "1rem", color: "#1990EA", display: "inline-flex", position: "relative", right: "21.5rem"}}>
+                        <Typography variant="h5" style={{ margin: "1rem", color: "#1990EA", display: "inline-flex", position: "relative", right: "21.5rem" }}>
                             Authentication Status
                         </Typography>
                         <FormControlLabel
-                            style={{position: "relative", right: "21.5rem", marginBottom: "0.3rem"}}
-                            control={<Checkbox checked={authenticated} name="authenticationStatus" size="medium" style={{color: "green", display: "block"}} />}
+                            style={{ position: "relative", right: "21.5rem", marginBottom: "0.3rem" }}
+                            control={<Checkbox checked={authenticated} name="authenticationStatus" size="medium" style={{ color: "green", display: "block" }} />}
                         />
-                        <Button variant="contained" color="primary" size="large" style={{position: "relative", right: "10rem", top: "6rem"}}>
+                        <Button variant="contained" color="primary" size="large" style={{ position: "relative", right: "10rem", top: "6rem" }}>
                             Register
                         </Button>
                     </form>

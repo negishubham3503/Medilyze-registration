@@ -1,6 +1,30 @@
 import React, { useContext, useState, useEffect } from "react"
 import { db } from "../components/firebase"
 
+export const checkRegistrar = async (value) => {
+    const uidRef = db.collection('registrars').doc(value);
+    const doc = await uidRef.get()
+    if (doc.exists) {
+        return "registered";
+    }
+    else {
+        return "not-registered";
+    }
+}
+
+export const fetchRegistrarName = async (value) => {
+    const uidRef = db.collection('registrars').doc(value);
+    const doc = await uidRef.get()
+    if (doc.exists) {
+        let data = doc.data()['name'];
+        return data;
+    }
+    else {
+        console.log("No such document!");
+        return -999;
+    }
+}
+
 
 export const fetchDoctorName = async (value) => {
     const uidRef = db.collection('doctors').doc(value);
