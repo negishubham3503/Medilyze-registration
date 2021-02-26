@@ -40,6 +40,7 @@ export default function Login() {
                 logout()
             }
 
+<<<<<<< HEAD
         } catch (e) {
             if (e.code === 'auth/wrong-password') {
                 console.log("Password is incorrect");
@@ -56,6 +57,45 @@ export default function Login() {
     return (
         <div className="container">
 
+=======
+    async function handleSubmit(e) {
+        e.preventDefault()
+
+        try {
+            setError("")
+            setLoading(true)
+            await login(emailRef.current.value, passwordRef.current.value)
+            history.push("/register")
+        } catch (e) {
+            if (e.code === 'auth/wrong-password') {
+                console.log("Password is incorrect");
+                setError("Password is incorrect");
+            }
+            else if (e.code === 'auth/invalid-email') {
+                console.log("User does not exist");
+                setError("User does not exist");
+            }
+        }
+
+        setLoading(false)
+    }
+
+    function handleOTPSend() {}
+
+    return (
+        <div className="container">
+            <div className="navbar">
+                <AccountCircleIcon />
+                <Typography id="account-link">
+                    admin
+                </Typography>
+                {/* <Typography>
+                    <Link onClick={handleLogout}>
+                        Logout
+                    </Link>
+                </Typography> */}
+            </div>
+>>>>>>> ac98e2738ae84ccbbe9fd72d8b4516d6c45ed619
             <div className="content">
                 <img src={logo} alt="logo" className="logo-image" />
                 <div className="headings">
@@ -66,9 +106,12 @@ export default function Login() {
                         Enter your credentials below
                     </Typography>
                 </div>
-                {error && <Alert severity="error">{error}</Alert>}
                 <form className="otp-form-container" noValidate onSubmit={handleSubmit}>
+<<<<<<< HEAD
 
+=======
+                    {error && <Alert severity="error" style={{ marginBottom: "1rem", width: "29.5rem" }}>{error}</Alert>}
+>>>>>>> ac98e2738ae84ccbbe9fd72d8b4516d6c45ed619
                     <Grid container spacing={2}>
                         <Grid item xs={9}>
                             <TextField
@@ -76,7 +119,8 @@ export default function Login() {
                                 required
                                 fullWidth
                                 id="uid"
-                                label="Email"
+                                label="Email Address"
+                                type="email"
                                 name="email"
                                 color="primary"
                                 inputRef={emailRef}
@@ -87,6 +131,7 @@ export default function Login() {
                                 variant="filled"
                                 required
                                 fullWidth
+                                type="password"
                                 id="password"
                                 type="password"
                                 label="Password"
