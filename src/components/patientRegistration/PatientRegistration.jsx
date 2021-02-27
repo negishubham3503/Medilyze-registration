@@ -6,12 +6,16 @@ import Webcam from "react-webcam";
 import { Button, Grid, Typography, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, InputLabel, Select, MenuItem, Input, Checkbox } from "@material-ui/core";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { fetchRegistrarName } from "../../contexts/FirestoreContext";
+import { getFace } from "../../contexts/FaceDetectionContext";
+import { loadTFModel } from "../../contexts/FacialRecognitionContext";
+import * as faceApi from "face-api.js";
 import { useAuth } from "../../contexts/AuthContext";
 
 
@@ -24,13 +28,14 @@ export default function PatientRegistration() {
     const [gender, setGender] = useState('female');
     const [maritalStatus, setMaritalStatus] = useState('unmarried');
     const [bg, setBG] = useState('');
+    const [options, setOptions] = useState('')
     const [occupation, setOccupation] = useState('');
     const [state, setState] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
     const [imgSrc, setImgSrc] = useState("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg");
     const videoConstraints = {
-        width: 400,
-        height: 400,
+        width: 300,
+        height: 300,
         facingMode: "user"
     };
     const stateList = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", "Lakshadweep", "Puducherry"];
@@ -42,11 +47,32 @@ export default function PatientRegistration() {
             setDoctorName(name)
         }
         fetchData();
+
     }, [doctorName])
-    const handleCapture = useCallback(() => {
-        const imageSrc = webcamRef.current.getScreenshot({ width: 400, height: 400 });
+
+    useEffect(() => {
+        async function fetchData() {
+            await faceApi.nets.tinyFaceDetector.load("/models/");
+        }
+        fetchData();
+    }, [])
+
+
+
+    const handleCapture = useCallback(async () => {
+        const imageSrc = webcamRef.current.getScreenshot({ width: 300, height: 300 });
         setImgSrc(imageSrc);
-    }, [webcamRef, setImgSrc]);
+        const opt = await getFace();
+        if (opt != -999) {
+            setOptions(opt);
+            console.log(opt);
+            setOpen(false);
+            loadTFModel();
+        }
+        else {
+            // setError("")
+        }
+    }, [webcamRef, setImgSrc, options]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -92,30 +118,28 @@ export default function PatientRegistration() {
                 </Typography>
             </div>
             <div className="content-registration">
-                {imgSrc && (<img src={imgSrc} className="patient-registration-image" />)}
+                {imgSrc && (<img src={imgSrc} className="patient-registration-image" id="webimage" />)}
                 <Button variant="contained" onClick={handleClickOpen} color="secondary" className="click-photo-button">
                     Click Picture
                 </Button>
                 <Dialog open={open} onClose={handleClose} aria-labelledby="contact">
-                    <DialogTitle id="camera">Capture Picture</DialogTitle>
                     <DialogContent>
-                        <DialogContentText>
-                            Press the camera button to click the perfect picture. Press close to return to registration form.
-                        </DialogContentText>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="secondary">
+                                <ExitToAppIcon />
+                            </Button>
+                        </DialogActions>
                         <Webcam
                             audio={false}
                             ref={webcamRef}
                             videoConstraints={videoConstraints}
                             screenshotFormat="image/jpeg"
-                            style={{ position: "relative", left: "4.5rem" }}
+                            style={{ position: "relative" }}
                         />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCapture} color="secondary">
                             <PhotoCameraIcon />
-                        </Button>
-                        <Button onClick={handleClose} color="secondary">
-                            Close
                         </Button>
                     </DialogActions>
                 </Dialog>
