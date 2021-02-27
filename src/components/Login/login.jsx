@@ -66,9 +66,8 @@ export default function Login() {
                         Enter your credentials below
                     </Typography>
                 </div>
-                {error && <Alert severity="error">{error}</Alert>}
                 <form className="otp-form-container" noValidate onSubmit={handleSubmit}>
-
+                    {error && <Alert severity="error" style={{ marginBottom: "1rem", width: "29.5rem" }}>{error}</Alert>}
                     <Grid container spacing={2}>
                         <Grid item xs={9}>
                             <TextField
@@ -76,7 +75,8 @@ export default function Login() {
                                 required
                                 fullWidth
                                 id="uid"
-                                label="Email"
+                                label="Email Address"
+                                type="email"
                                 name="email"
                                 color="primary"
                                 inputRef={emailRef}
@@ -87,6 +87,7 @@ export default function Login() {
                                 variant="filled"
                                 required
                                 fullWidth
+                                type="password"
                                 id="password"
                                 type="password"
                                 label="Password"
