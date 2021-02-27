@@ -30,7 +30,6 @@ export default function PatientRegistration() {
     const [error, setError] = useState("")
     const [open, setOpen] = useState(false);
     const [doctorName, setDoctorName] = useState("")
-    const { login, logout, getUID } = useAuth()
     const [gender, setGender] = useState('female');
     const [maritalStatus, setMaritalStatus] = useState('unmarried');
     const [bg, setBG] = useState('');
