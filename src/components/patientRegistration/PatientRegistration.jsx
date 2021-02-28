@@ -13,7 +13,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-<<<<<<< HEAD
 import { fetchRegistrarName } from "../../contexts/FirestoreContext";
 import { getFace } from "../../contexts/FaceDetectionContext";
 import { compareFromDatabase } from "../../contexts/FirebaseDatabaseContext";
@@ -22,9 +21,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import axios from 'axios';
 
 
-=======
-import { useAuth } from "../../contexts/AuthContext";
->>>>>>> ac98e2738ae84ccbbe9fd72d8b4516d6c45ed619
 
 export default function PatientRegistration() {
     const { login, logout, getUID } = useAuth()
