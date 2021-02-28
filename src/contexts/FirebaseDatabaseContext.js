@@ -1,18 +1,25 @@
 import { rdbms, db } from "../components/firebase"
 
-export const generateOTP = async (value) => {
-    const rand = Math.floor(100000 + Math.random() * 900000);
-    const pidRef = db.collection('patientIDUID').doc(value.trim());
-    const uidDoc = await pidRef.get()
-    if (uidDoc.exists) {
-        let data = uidDoc.data()['uid'];
-        rdbms.ref('otp/' + data).set({
-            otp: rand,
-        });
+
+export const compareFromDatabase = async (faceprint) => {
+    var data;
+
+    let name = await rdbms.ref('registered_fid/').once("value", snapshot => {
+    });
+    data = name.val();
+    for (var i = 0; i < data.length; i++) {
+        var sum = 0.0
+        for (var j = 0; j < 128; j++) {
+            sum = sum + Math.pow(JSON.parse("[" + data[i] + "]")[0][j] - faceprint[j], 2)
+        }
+        sum = Math.sqrt(sum)
+        console.log(sum)
+        if (sum <= 5) {
+            return "duplicate-registration"
+        }
     }
-    else {
-        console.log("No such patient!");
-        return -999;
-    }
+    return "new-registration"
+
+
 }
 
