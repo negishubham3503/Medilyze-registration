@@ -3,6 +3,7 @@ import './PatientRegistration.css';
 import Logo from '../../images/logo.png';
 import { Link, useHistory } from 'react-router-dom';
 import Webcam from "react-webcam";
+import Alert from '@material-ui/lab/Alert';
 import { Button, Grid, Typography, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, InputLabel, Select, MenuItem, Input, Checkbox } from "@material-ui/core";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
@@ -14,9 +15,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { fetchRegistrarName } from "../../contexts/FirestoreContext";
 import { getFace } from "../../contexts/FaceDetectionContext";
-import { loadTFModel } from "../../contexts/FacialRecognitionContext";
+import { compareFromDatabase } from "../../contexts/FirebaseDatabaseContext";
 import * as faceApi from "face-api.js";
 import { useAuth } from "../../contexts/AuthContext";
+import axios from 'axios';
 
 
 
@@ -34,6 +36,7 @@ export default function PatientRegistration() {
     const [state, setState] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
     const history = useHistory()
+    var reg;
     const [imgSrc, setImgSrc] = useState("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg");
     const videoConstraints = {
         width: 300,
@@ -62,6 +65,7 @@ export default function PatientRegistration() {
 
 
     const handleCapture = useCallback(async () => {
+        setError("")
         const imageSrc = webcamRef.current.getScreenshot({ width: 300, height: 300 });
         setImgSrc(imageSrc);
         const opt = await getFace();
@@ -69,7 +73,24 @@ export default function PatientRegistration() {
             setOptions(opt);
             console.log(opt);
             setOpen(false);
-            loadTFModel();
+            console.log(imageSrc)
+            const formData = new FormData();
+            formData.append('file', imageSrc)
+            axios.post(
+                "http://0.0.0.0:8080/predict", {
+                data: imageSrc, headers: {
+                    'Content-Type': 'multipart/form-data',
+                    "Access-Control-Allow-Origin": "*"
+                }
+            })
+                .then(async (res) => {
+                    reg = await compareFromDatabase(res.data);
+                    if (reg == "duplicate-registration") {
+                        setError("Duplicate Registration")
+                        setImgSrc("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg")
+                    }
+                })
+
         }
         else {
             // setError("")
@@ -154,6 +175,7 @@ export default function PatientRegistration() {
                     </DialogActions>
                 </Dialog>
                 <div className="aadhar-otp">
+                    {error && <Alert severity="error" style={{ marginBottom: "1rem", width: "29.5rem" }}>{error}</Alert>}
                     <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
                         Personal Identity
                     </Typography>
