@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
   function resetPassword(email) {
     return auth.sendPasswordResetEmail(email)
   }
-  function getUID(){
+  function getUID() {
     return auth.currentUser.uid;
   }
 

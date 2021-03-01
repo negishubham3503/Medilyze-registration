@@ -4,9 +4,9 @@ import {
   Switch,
   Route
 } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
-import PrivateRoute from './components/privateRoute';
 import './App.css';
+import PrivateRoute from './components/privateRoute';
+import { AuthProvider } from "./contexts/AuthContext";
 import PatientRegistration from './components/patientRegistration/PatientRegistration';
 import Login from './components/Login/login';
 import RegistrationList from './components/registrationList/RegistrationList';

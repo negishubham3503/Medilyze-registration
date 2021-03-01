@@ -2,16 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import './login.css';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Alert from '@material-ui/lab/Alert';
 import logo from "../../images/logo.png";
 import containerImage from "../../images/7882.png"
 import { useAuth } from "../../contexts/AuthContext";
-import { fetchPatientData, fetchDoctorName } from "../../contexts/FirestoreContext";
-import { generateOTP } from "../../contexts/FirebaseDatabaseContext";
+import { checkRegistrar } from "../../contexts/FirestoreContext";
 
 
 import { useHistory } from "react-router-dom";
@@ -23,26 +20,26 @@ export default function Login() {
     const { login, logout, getUID } = useAuth()
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
-    const [doctorName, setDoctorName] = useState("")
     const history = useHistory()
-
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         const UID = getUID();
-    //         const name = await fetchDoctorName(UID);
-    //         setDoctorName(name)
-    //     }
-    //     fetchData();
-    // }, [doctorName])
 
     async function handleSubmit(e) {
         e.preventDefault()
-
         try {
             setError("")
             setLoading(true)
             await login(emailRef.current.value, passwordRef.current.value)
-            history.push("/register")
+            const UID = getUID();
+            const status = await checkRegistrar(UID)
+            console.log(status);
+            if (status == 'registered') {
+                history.push("/patientSearch")
+            }
+            else {
+                console.log("User not permitted to login");
+                setError("User not permitted to login");
+                logout()
+            }
+
         } catch (e) {
             if (e.code === 'auth/wrong-password') {
                 console.log("Password is incorrect");
@@ -56,22 +53,9 @@ export default function Login() {
 
         setLoading(false)
     }
-
-    function handleOTPSend() {}
-
     return (
         <div className="container">
-            <div className="navbar">
-                <AccountCircleIcon />
-                <Typography id="account-link">
-                    admin
-                </Typography>
-                {/* <Typography>
-                    <Link onClick={handleLogout}>
-                        Logout
-                    </Link>
-                </Typography> */}
-            </div>
+
             <div className="content">
                 <img src={logo} alt="logo" className="logo-image" />
                 <div className="headings">
@@ -105,6 +89,7 @@ export default function Login() {
                                 fullWidth
                                 type="password"
                                 id="password"
+                                type="password"
                                 label="Password"
                                 name="password"
                                 color="primary"
@@ -129,6 +114,6 @@ export default function Login() {
                 </form>
                 <img src={containerImage} alt="loginPage" className="container-image" />
             </div>
-        </div>
+        </div >
     )
 }
