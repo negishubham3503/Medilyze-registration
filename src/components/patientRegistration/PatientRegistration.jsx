@@ -62,6 +62,10 @@ export default function PatientRegistration() {
         fetchData();
     }, [])
 
+    const handleRegister = async () => {
+        console.log()
+
+    }
 
 
     const handleCapture = useCallback(async () => {
@@ -229,6 +233,17 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
+                                        fullWidth
+                                        id="patient-middle-name"
+                                        label="Middle Name"
+                                        name="middleName"
+                                        autoComplete="name"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
                                         required
                                         fullWidth
                                         id="patient-last-name"
@@ -254,6 +269,30 @@ export default function PatientRegistration() {
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        id="patient-last-name"
+                                        label="Father's Name"
+                                        name="lastName"
+                                        autoComplete="name"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        id="patient-last-name"
+                                        label="Mother's Name"
+                                        name="lastName"
+                                        autoComplete="name"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
                                     <FormControl component="fieldset">
                                         <FormLabel component="legend">Gender</FormLabel>
                                         <RadioGroup row aria-label="gender" name="gender1" value={gender} onChange={handleGenderChange}>
@@ -273,7 +312,17 @@ export default function PatientRegistration() {
                                     </FormControl>
                                 </Grid>
                                 <Grid container item xs={4}>
-                                    <FormControl variant="outlined" fullWidth size="small">
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="other-occupation"
+                                        label="Spouse Name"
+                                        name="other-occupation"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
+                                    <FormControl variant="outlined" fullWidth size="small" required>
                                         <InputLabel id="blood-group">Blood Group</InputLabel>
                                         <Select
                                             labelId="blood-group"
@@ -298,27 +347,26 @@ export default function PatientRegistration() {
                                     </FormControl>
                                 </Grid>
                                 <Grid container item xs={4}>
-                                    <FormControl variant="outlined" fullWidth size="small">
-                                        <InputLabel id="select-occupation">Select Occupation</InputLabel>
+                                    <FormControl variant="outlined" fullWidth size="small" required>
+                                        <InputLabel id="proof-of-identity">Proof of Identity</InputLabel>
                                         <Select
-                                            labelId="select-occupation"
-                                            id="occupation"
-                                            value={occupation}
-                                            onChange={handleOccupationChange}
-                                            label="Select Occupation"
+                                            labelId="proof-of-identity"
+                                            id="poi"
+                                            value={bg}
+
+                                            onChange={handleBGChange}
+                                            label="Proof of Identity"
                                             style={{ textAlign: "left" }}
                                         >
                                             <MenuItem value="">
                                                 <em>None</em>
                                             </MenuItem>
-                                            <MenuItem value={'Armed Forces'}>Armed Forces</MenuItem>
-                                            <MenuItem value={'Farmer'}>Farmer</MenuItem>
-                                            <MenuItem value={'Student'}>Student</MenuItem>
-                                            <MenuItem value={'Teacher'}>Teacher</MenuItem>
-                                            <MenuItem value={'A-'}>A-</MenuItem>
-                                            <MenuItem value={'B-'}>B-</MenuItem>
-                                            <MenuItem value={'AB-'}>AB-</MenuItem>
-                                            <MenuItem value={'Other'}>Other</MenuItem>
+                                            <MenuItem value={'Aadhaar(UID)'}>Aadhaar(UID)</MenuItem>
+                                            <MenuItem value={'Passport'}>Passport</MenuItem>
+                                            <MenuItem value={'Driving License'}>Driving License</MenuItem>
+                                            <MenuItem value={'Voter ID Card'}>Voter ID Card</MenuItem>
+                                            <MenuItem value={'PAN Card'}>PAN Card</MenuItem>
+                                            <MenuItem value={'Passbook'}>Passbook</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -326,9 +374,27 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        id="other-occupation"
-                                        label="If other, please specify"
-                                        name="other-occupation"
+                                        required
+                                        id="height"
+                                        label="Proof of Identity Number"
+                                        name="height"
+                                        size="small"
+                                    />
+                                </Grid>
+                            </Grid>
+                        </div>
+                        <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
+                            Insurance Details
+                        </Typography>
+                        <div className="patient-details">
+                            <Grid container spacing={3}>
+                                <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="height"
+                                        label="Insurance Company"
+                                        name="height"
                                         size="small"
                                     />
                                 </Grid>
@@ -337,15 +403,58 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         fullWidth
                                         id="height"
-                                        label="Height"
+                                        label="Insurance Company"
+                                        name="height"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="height"
+                                        label="Insurance Company"
+                                        name="height"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        required
+                                        id="height"
+                                        label="Insurance Company"
+                                        name="height"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        required
+                                        id="height"
+                                        label="Insurance Company"
+                                        name="height"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        required
+                                        id="height"
+                                        label="Insurance Company"
                                         name="height"
                                         size="small"
                                     />
                                 </Grid>
                             </Grid>
                         </div>
-                        <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
-                            Medical History
+                        {/* <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
+                            Insurance Information
                         </Typography>
                         <div className="patient-details">
                             <Input
@@ -355,7 +464,7 @@ export default function PatientRegistration() {
                                 color="primary"
                                 variant="outlined"
                             />
-                        </div>
+                        </div> */}
                         <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
                             Contact Details
                         </Typography>
@@ -389,9 +498,10 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        id="patient-mobile2"
-                                        label="Emergency Mobile Number"
-                                        name="mobile2"
+                                        required
+                                        id="emergency-contact"
+                                        label="Emergency Contact Number"
+                                        name="emergencyContact"
                                         autoComplete="number"
                                         size="small"
                                     />
@@ -399,6 +509,19 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
+                                        fullWidth
+                                        required
+                                        id="emergency-person"
+                                        label="Emergency Contact Person"
+                                        name="emergencyPerson"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid container item xs={4}>
+                                    <TextField
+                                        variant="outlined"
+                                        required
+                                        disabled
                                         fullWidth
                                         id="country"
                                         value="India"
@@ -443,7 +566,7 @@ export default function PatientRegistration() {
                                         required
                                         fullWidth
                                         id="address-line-1"
-                                        label="Flat No. / door / Block No."
+                                        label="Flat No./House No./Door/Block No."
                                         name="addressLine1"
                                         size="small"
                                     />
@@ -451,6 +574,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
+                                        required
                                         fullWidth
                                         id="road-street"
                                         label="Road / Street / Lane"
@@ -472,14 +596,14 @@ export default function PatientRegistration() {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Typography variant="h5" style={{ margin: "1rem", color: "#1990EA", display: "inline-flex", position: "relative", right: "21.5rem" }}>
+                        {/* <Typography variant="h5" style={{ margin: "1rem", color: "#1990EA", display: "inline-flex", position: "relative", right: "21.5rem" }}>
                             Authentication Status
                         </Typography>
                         <FormControlLabel
                             style={{ position: "relative", right: "21.5rem", marginBottom: "0.3rem" }}
                             control={<Checkbox checked={authenticated} name="authenticationStatus" size="medium" style={{ color: "green", display: "block" }} />}
-                        />
-                        <Button variant="contained" color="primary" size="large" style={{ position: "relative", right: "10rem", top: "6rem" }}>
+                        /> */}
+                        <Button variant="contained" color="primary" size="large" onClick={handleRegister} style={{ position: "relative", right: "5rem", top: "6rem" }}>
                             Register
                         </Button>
                     </form>
