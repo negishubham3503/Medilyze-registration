@@ -9,6 +9,7 @@ import PrivateRoute from './components/privateRoute';
 import './App.css';
 import PatientRegistration from './components/patientRegistration/PatientRegistration';
 import Login from './components/Login/login';
+import RegistrationList from './components/registrationList/RegistrationList';
 
 function App() {
   return (
@@ -17,7 +18,9 @@ function App() {
         <AuthProvider>
           <Switch>
             <PrivateRoute exact path="/register" component={PatientRegistration} />
+            <PrivateRoute exact path="/list" component={RegistrationList} />
             <Route exact path="/" component={Login} />
+            <Route path="/test" component={RegistrationList} />
           </Switch>
         </AuthProvider>
       </Router>

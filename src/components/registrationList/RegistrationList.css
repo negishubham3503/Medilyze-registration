@@ -1,0 +1,41 @@
+.container-list {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+    padding-right: 5rem;
+    padding-left: 5rem;
+    background-image: linear-gradient(80deg, #1990ea 36%, #bfdbf1 36%);
+}
+
+.navbar-list {
+    display: flex;
+    position: absolute;
+    top: 3rem;
+    right: 5rem;
+}
+
+.header-icons {
+    color: #CCCCCC;
+    margin-top: 0.5rem;
+    margin-left: 45rem;
+}
+
+.content-list {
+    background-color: white;
+    padding: 1.2rem 2.5rem;
+}
+
+.content-navbar {
+    background-color: white;
+    display: flex;
+    padding: 0.7rem 3rem;
+    border-bottom: 0.2rem solid #F4F4F5;
+}
+
+.search-bar fieldset {
+    border-radius: 2rem;
+}
+
+.table-options {
+    display: flex;
+    padding: 2rem 0rem 1.5rem 2rem;
+}
