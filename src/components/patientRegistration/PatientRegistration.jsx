@@ -15,7 +15,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { fetchRegistrarName } from "../../contexts/FirestoreContext";
 import { getFace } from "../../contexts/FaceDetectionContext";
-import { compareFromDatabase } from "../../contexts/FirebaseDatabaseContext";
+import { compareFromDatabase, addRegistration, updateFacialRecords } from "../../contexts/FirebaseDatabaseContext";
 import * as faceApi from "face-api.js";
 import { useAuth } from "../../contexts/AuthContext";
 import axios from 'axios';
@@ -30,11 +30,16 @@ export default function PatientRegistration() {
     const firstNameRef = useRef();
     const middleNameRef = useRef();
     const lastNameRef = useRef();
-    const dateRef = useRef();
+    const dobRef = useRef();
     const fatherRef = useRef();
     const motherRef = useRef();
     const spouseRef = useRef();
+    const poiNumberRef = useRef();
     const insuranceCompanyRef = useRef();
+    const organizationRef = useRef();
+    const policyNumberRef = useRef();
+    const healthCardNumberRef = useRef();
+    const validityRef = useRef();
     const emailRef = useRef();
     const mobileRef = useRef();
     const emergencyContactRef = useRef();
@@ -43,7 +48,7 @@ export default function PatientRegistration() {
     const addressLine1Ref = useRef();
     const addressLine2Ref = useRef();
     const pincodeRef = useRef();
-    const [pid, setPid] = useState();
+    const [poi, setPoi] = useState();
     const [error, setError] = useState("")
     const [open, setOpen] = useState(false);
     const [doctorName, setDoctorName] = useState("")
@@ -80,7 +85,37 @@ export default function PatientRegistration() {
     }, [])
 
     const handleRegister = async () => {
-        
+        const data = {
+            "firstName": firstNameRef.current.value,
+            "middleName": middleNameRef.current.value,
+            "lastName": lastNameRef.current.value,
+            "dob": dobRef.current.value,
+            "fatherName": fatherRef.current.value,
+            "motherName": motherRef.current.value,
+            "gender": gender,
+            "maritalStatus": maritalStatus,
+            "spouseName": spouseRef.current.value,
+            "bloodGroup": bg,
+            "poi": poi,
+            "poiNumber": poiNumberRef.current.value,
+            "insuranceCompany": insuranceCompanyRef.current.value,
+            "organizationName": organizationRef.current.value,
+            "policyNumber": policyNumberRef.current.value,
+            "healthCardNumber": healthCardNumberRef.current.value,
+            "insuranceValidity": validityRef.current.value,
+            "email": emailRef.current.value,
+            "phone": motherRef.current.value,
+            "emergencyContact": emergencyContactRef.current.value,
+            "emergencyPerson": emergencyContactPersonRef.current.value,
+            "country": "India",
+            "state": state,
+            "city": cityRef.current.value,
+            "address1": addressLine1Ref.current.value,
+            "address2": addressLine2Ref.current.value,
+            "pincode": pincodeRef.current.value
+        }
+        addRegistration(data);
+
     }
 
 
@@ -108,6 +143,9 @@ export default function PatientRegistration() {
                     if (reg == "duplicate-registration") {
                         setError("Duplicate Registration")
                         setImgSrc("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg")
+                    }
+                    else if (reg == "new-registration") {
+                        updateFacialRecords(res.data)
                     }
                 })
 
@@ -137,8 +175,8 @@ export default function PatientRegistration() {
         setBG(event.target.value);
     };
 
-    const handlePIDChange = (event) => {
-        setPid(event.target.value);
+    const handlePoiChange = (event) => {
+        setPoi(event.target.value);
     }
 
     const handleStateChange = (event) => {
@@ -195,7 +233,7 @@ export default function PatientRegistration() {
                     </DialogActions>
                 </Dialog>
                 <div className="aadhar-otp">
-                    {error && <Alert severity="error" style={{ marginBottom: "1rem", width: "29.5rem" }}>{error}</Alert>}
+                    {error && <Alert severity="error" style={{ marginBottom: "1rem", width: "49rem" }}>{error}</Alert>}
                     <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
                         Personal Identity
                     </Typography>
@@ -208,7 +246,6 @@ export default function PatientRegistration() {
                                 id="aadhar-no"
                                 label="Aadhar Number"
                                 name="aadhar"
-                                autoComplete="number"
                                 size="small"
                                 inputRef={aadharRef}
                             />
@@ -241,10 +278,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="patient-first-name"
                                         label="First Name"
-                                        name="firstName"
-                                        autoComplete="name"
                                         size="small"
                                         inputRef={firstNameRef}
                                     />
@@ -253,10 +287,7 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        id="patient-middle-name"
                                         label="Middle Name"
-                                        name="middleName"
-                                        autoComplete="name"
                                         size="small"
                                         inputRef={middleNameRef}
                                     />
@@ -266,25 +297,21 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="patient-last-name"
                                         label="Last Name"
-                                        name="lastName"
-                                        autoComplete="name"
                                         size="small"
                                         inputRef={lastNameRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
                                     <TextField
-                                        id="date"
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        label="DOB"
+                                        label="Date of Birth"
                                         type="date"
                                         defaultValue="2017-05-24"
                                         size="small"
-                                        inputRef={dateRef}
+                                        inputRef={dobRef}
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
@@ -295,10 +322,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="father-name"
                                         label="Father's Name"
-                                        name="fatherName"
-                                        autoComplete="name"
                                         size="small"
                                         inputRef={fatherRef}
                                     />
@@ -308,10 +332,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="mother-name"
                                         label="Mother's Name"
-                                        name="motherName"
-                                        autoComplete="name"
                                         size="small"
                                         inputRef={motherRef}
                                     />
@@ -339,9 +360,7 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        id="spouse-name"
                                         label="Spouse Name"
-                                        name="spouseName"
                                         size="small"
                                         inputRef={spouseRef}
                                     />
@@ -351,7 +370,6 @@ export default function PatientRegistration() {
                                         <InputLabel id="blood-group">Blood Group</InputLabel>
                                         <Select
                                             labelId="blood-group"
-                                            id="bg"
                                             value={bg}
                                             onChange={handleBGChange}
                                             label="Blood Group"
@@ -376,10 +394,8 @@ export default function PatientRegistration() {
                                         <InputLabel id="proof-of-identity">Proof of Identity</InputLabel>
                                         <Select
                                             labelId="proof-of-identity"
-                                            id="poi"
-                                            value={pid}
-
-                                            onChange={handlePIDChange}
+                                            value={poi}
+                                            onChange={handlePoiChange}
                                             label="Proof of Identity"
                                             style={{ textAlign: "left" }}
                                         >
@@ -400,9 +416,8 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         fullWidth
                                         required
-                                        id="height"
-                                        label="Height"
-                                        name="height"
+                                        label="Proof of Identity Number"
+                                        inputRef={poiNumberRef}
                                         size="small"
                                     />
                                 </Grid>
@@ -417,20 +432,9 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        id="insurance-company"
-                                        label="Insurance Company"
-                                        name="insuranceCompany"
-                                        size="small"
+                                        required
+                                        label="Insurance Company Name"
                                         inputRef={insuranceCompanyRef}
-                                    />
-                                </Grid>
-                                <Grid container item xs={4}>
-                                    <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        id="height"
-                                        label="Insurance Company"
-                                        name="height"
                                         size="small"
                                     />
                                 </Grid>
@@ -438,9 +442,8 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        id="height"
-                                        label="Insurance Company"
-                                        name="height"
+                                        label="Insured Organization Name"
+                                        inputRef={organizationRef}
                                         size="small"
                                     />
                                 </Grid>
@@ -449,9 +452,8 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         fullWidth
                                         required
-                                        id="height"
-                                        label="Insurance Company"
-                                        name="height"
+                                        label="Policy Number"
+                                        inputRef={policyNumberRef}
                                         size="small"
                                     />
                                 </Grid>
@@ -460,37 +462,28 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         fullWidth
                                         required
-                                        id="height"
-                                        label="Insurance Company"
-                                        name="height"
+                                        label="Health Card Number"
+                                        inputRef={healthCardNumberRef}
                                         size="small"
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        fullWidth
                                         required
-                                        id="height"
-                                        label="Insurance Company"
-                                        name="height"
+                                        fullWidth
+                                        label="Insurance Validity"
+                                        type="date"
+                                        inputRef={validityRef}
+                                        defaultValue="2017-05-24"
                                         size="small"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
                         </div>
-                        {/* <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
-                            Insurance Information
-                        </Typography>
-                        <div className="patient-details">
-                            <Input
-                                type="file"
-                                label="Upload Medical File"
-                                size="small"
-                                color="primary"
-                                variant="outlined"
-                            />
-                        </div> */}
                         <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
                             Contact Details
                         </Typography>
@@ -501,10 +494,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="patient-email"
                                         label="Email"
-                                        name="email"
-                                        autoComplete="email"
                                         size="small"
                                         inputRef={emailRef}
                                     />
@@ -514,10 +504,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="patient-mobile"
                                         label="Mobile Number"
-                                        name="mobile"
-                                        autoComplete="number"
                                         size="small"
                                         inputRef={mobileRef}
                                     />
@@ -527,10 +514,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         fullWidth
                                         required
-                                        id="emergency-contact"
                                         label="Emergency Contact Number"
-                                        name="emergencyContact"
-                                        autoComplete="number"
                                         size="small"
                                         inputRef={emergencyContactRef}
                                     />
@@ -540,9 +524,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         fullWidth
                                         required
-                                        id="emergency-person"
                                         label="Emergency Contact Person"
-                                        name="emergencyPerson"
                                         size="small"
                                         inputRef={emergencyContactPersonRef}
                                     />
@@ -553,10 +535,7 @@ export default function PatientRegistration() {
                                         required
                                         disabled
                                         fullWidth
-                                        id="country"
                                         value="India"
-                                        name="country"
-                                        autoComplete="country"
                                         size="small"
                                     />
                                 </Grid>
@@ -565,7 +544,6 @@ export default function PatientRegistration() {
                                         <InputLabel id="select-state">State / UT</InputLabel>
                                         <Select
                                             labelId="select-state"
-                                            id="state"
                                             value={state}
                                             onChange={handleStateChange}
                                             label="State / UT"
@@ -583,10 +561,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="city"
                                         label="City"
-                                        name="city"
-                                        autoComplete="city"
                                         size="small"
                                         inputRef={cityRef}
                                     />
@@ -596,9 +571,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="address-line-1"
                                         label="Flat No./House No./Door/Block No."
-                                        name="addressLine1"
                                         size="small"
                                         inputRef={addressLine1Ref}
                                     />
@@ -608,9 +581,7 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="road-street"
                                         label="Road / Street / Lane"
-                                        name="city"
                                         size="small"
                                         inputRef={addressLine2Ref}
                                     />
@@ -620,24 +591,14 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="pincode"
                                         label="PIN Code / ZIP Code"
-                                        name="pincode"
-                                        autoComplete="zipcode"
                                         size="small"
                                         inputRef={pincodeRef}
                                     />
                                 </Grid>
                             </Grid>
                         </div>
-                        {/* <Typography variant="h5" style={{ margin: "1rem", color: "#1990EA", display: "inline-flex", position: "relative", right: "21.5rem" }}>
-                            Authentication Status
-                        </Typography>
-                        <FormControlLabel
-                            style={{ position: "relative", right: "21.5rem", marginBottom: "0.3rem" }}
-                            control={<Checkbox checked={authenticated} name="authenticationStatus" size="medium" style={{ color: "green", display: "block" }} />}
-                        /> */}
-                        <Button variant="contained" color="primary" size="large" onClick={handleRegister} style={{ position: "relative", right: "5rem", top: "6rem" }}>
+                        <Button variant="contained" color="primary" size="large" onClick={handleRegister} style={{ position: "relative", top: "6rem" }}>
                             Register
                         </Button>
                     </form>

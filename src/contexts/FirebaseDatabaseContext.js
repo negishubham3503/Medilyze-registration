@@ -19,7 +19,29 @@ export const compareFromDatabase = async (faceprint) => {
         }
     }
     return "new-registration"
+}
 
+export const updateFacialRecords = async (data) => {
+    let name = await rdbms.ref('registered_fid/').once("value", snapshot => {
+    }
+    );
+    let len = await name.val().length
+    let datum = {}
+    datum[len] = JSON.stringify(data)
+
+    rdbms.ref('registered_fid/').update(datum);
+
+}
+
+export const addRegistration = async (data) => {
+    let name = await rdbms.ref('pending_registrations/').once("value", snapshot => {
+    }
+    );
+    let len = await name.val().length
+    let datum = {}
+    datum[len] = data
+
+    rdbms.ref('pending_registrations/').update(datum);
 
 }
 
