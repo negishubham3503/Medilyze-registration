@@ -25,6 +25,25 @@ import axios from 'axios';
 export default function PatientRegistration() {
     const { login, logout, getUID } = useAuth()
     const webcamRef = useRef(null);
+    const aadharRef = useRef();
+    const otpRef = useRef();
+    const firstNameRef = useRef();
+    const middleNameRef = useRef();
+    const lastNameRef = useRef();
+    const dateRef = useRef();
+    const fatherRef = useRef();
+    const motherRef = useRef();
+    const spouseRef = useRef();
+    const insuranceCompanyRef = useRef();
+    const emailRef = useRef();
+    const mobileRef = useRef();
+    const emergencyContactRef = useRef();
+    const emergencyContactPersonRef = useRef();
+    const cityRef = useRef();
+    const addressLine1Ref = useRef();
+    const addressLine2Ref = useRef();
+    const pincodeRef = useRef();
+    const [pid, setPid] = useState();
     const [error, setError] = useState("")
     const [open, setOpen] = useState(false);
     const [doctorName, setDoctorName] = useState("")
@@ -32,9 +51,7 @@ export default function PatientRegistration() {
     const [maritalStatus, setMaritalStatus] = useState('unmarried');
     const [bg, setBG] = useState('');
     const [options, setOptions] = useState('')
-    const [occupation, setOccupation] = useState('');
     const [state, setState] = useState("");
-    const [authenticated, setAuthenticated] = useState(false);
     const history = useHistory()
     var reg;
     const [imgSrc, setImgSrc] = useState("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg");
@@ -63,8 +80,7 @@ export default function PatientRegistration() {
     }, [])
 
     const handleRegister = async () => {
-        console.log()
-
+        
     }
 
 
@@ -121,8 +137,8 @@ export default function PatientRegistration() {
         setBG(event.target.value);
     };
 
-    const handleOccupationChange = (event) => {
-        setOccupation(event.target.value);
+    const handlePIDChange = (event) => {
+        setPid(event.target.value);
     }
 
     const handleStateChange = (event) => {
@@ -194,6 +210,7 @@ export default function PatientRegistration() {
                                 name="aadhar"
                                 autoComplete="number"
                                 size="small"
+                                inputRef={aadharRef}
                             />
                         </Grid>
                         <Grid container item xs={6}>
@@ -205,6 +222,7 @@ export default function PatientRegistration() {
                                 label="OTP"
                                 name="otp"
                                 size="small"
+                                inputRef={otpRef}
                             />
                         </Grid>
                         <Grid container item xs={6}>
@@ -228,6 +246,7 @@ export default function PatientRegistration() {
                                         name="firstName"
                                         autoComplete="name"
                                         size="small"
+                                        inputRef={firstNameRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -239,6 +258,7 @@ export default function PatientRegistration() {
                                         name="middleName"
                                         autoComplete="name"
                                         size="small"
+                                        inputRef={middleNameRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -251,6 +271,7 @@ export default function PatientRegistration() {
                                         name="lastName"
                                         autoComplete="name"
                                         size="small"
+                                        inputRef={lastNameRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -263,6 +284,7 @@ export default function PatientRegistration() {
                                         type="date"
                                         defaultValue="2017-05-24"
                                         size="small"
+                                        inputRef={dateRef}
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
@@ -273,11 +295,12 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="patient-last-name"
+                                        id="father-name"
                                         label="Father's Name"
-                                        name="lastName"
+                                        name="fatherName"
                                         autoComplete="name"
                                         size="small"
+                                        inputRef={fatherRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -285,11 +308,12 @@ export default function PatientRegistration() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        id="patient-last-name"
+                                        id="mother-name"
                                         label="Mother's Name"
-                                        name="lastName"
+                                        name="motherName"
                                         autoComplete="name"
                                         size="small"
+                                        inputRef={motherRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -315,10 +339,11 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        id="other-occupation"
+                                        id="spouse-name"
                                         label="Spouse Name"
-                                        name="other-occupation"
+                                        name="spouseName"
                                         size="small"
+                                        inputRef={spouseRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -352,9 +377,9 @@ export default function PatientRegistration() {
                                         <Select
                                             labelId="proof-of-identity"
                                             id="poi"
-                                            value={bg}
+                                            value={pid}
 
-                                            onChange={handleBGChange}
+                                            onChange={handlePIDChange}
                                             label="Proof of Identity"
                                             style={{ textAlign: "left" }}
                                         >
@@ -376,7 +401,7 @@ export default function PatientRegistration() {
                                         fullWidth
                                         required
                                         id="height"
-                                        label="Proof of Identity Number"
+                                        label="Height"
                                         name="height"
                                         size="small"
                                     />
@@ -392,10 +417,11 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        id="height"
+                                        id="insurance-company"
                                         label="Insurance Company"
-                                        name="height"
+                                        name="insuranceCompany"
                                         size="small"
+                                        inputRef={insuranceCompanyRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -480,6 +506,7 @@ export default function PatientRegistration() {
                                         name="email"
                                         autoComplete="email"
                                         size="small"
+                                        inputRef={emailRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -492,6 +519,7 @@ export default function PatientRegistration() {
                                         name="mobile"
                                         autoComplete="number"
                                         size="small"
+                                        inputRef={mobileRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -504,6 +532,7 @@ export default function PatientRegistration() {
                                         name="emergencyContact"
                                         autoComplete="number"
                                         size="small"
+                                        inputRef={emergencyContactRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -515,6 +544,7 @@ export default function PatientRegistration() {
                                         label="Emergency Contact Person"
                                         name="emergencyPerson"
                                         size="small"
+                                        inputRef={emergencyContactPersonRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -558,6 +588,7 @@ export default function PatientRegistration() {
                                         name="city"
                                         autoComplete="city"
                                         size="small"
+                                        inputRef={cityRef}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -569,6 +600,7 @@ export default function PatientRegistration() {
                                         label="Flat No./House No./Door/Block No."
                                         name="addressLine1"
                                         size="small"
+                                        inputRef={addressLine1Ref}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -580,6 +612,7 @@ export default function PatientRegistration() {
                                         label="Road / Street / Lane"
                                         name="city"
                                         size="small"
+                                        inputRef={addressLine2Ref}
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
@@ -592,6 +625,7 @@ export default function PatientRegistration() {
                                         name="pincode"
                                         autoComplete="zipcode"
                                         size="small"
+                                        inputRef={pincodeRef}
                                     />
                                 </Grid>
                             </Grid>
