@@ -12,11 +12,11 @@ export const checkRegistrar = async (value) => {
     }
 }
 
-export const fetchRegistrarName = async (value) => {
+export const fetchRegistrarData = async (value) => {
     const uidRef = db.collection('registrars').doc(value);
     const doc = await uidRef.get()
     if (doc.exists) {
-        let data = doc.data()['name'];
+        let data = doc.data();
         return data;
     }
     else {

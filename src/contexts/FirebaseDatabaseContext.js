@@ -21,6 +21,14 @@ export const compareFromDatabase = async (faceprint) => {
     return "new-registration"
 }
 
+export const fetchRegistrationRecords = async () => {
+    let records = await rdbms.ref('pending_registrations/').once("value", snapshot => {
+    });
+    const data = records.val();
+    return data
+}
+
+
 export const updateFacialRecords = async (data) => {
     let name = await rdbms.ref('registered_fid/').once("value", snapshot => {
     }

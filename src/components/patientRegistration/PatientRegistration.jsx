@@ -13,7 +13,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { fetchRegistrarName } from "../../contexts/FirestoreContext";
+import { fetchRegistrarData } from "../../contexts/FirestoreContext";
 import { getFace } from "../../contexts/FaceDetectionContext";
 import { compareFromDatabase, addRegistration, updateFacialRecords } from "../../contexts/FirebaseDatabaseContext";
 import * as faceApi from "face-api.js";
@@ -51,7 +51,8 @@ export default function PatientRegistration() {
     const [poi, setPoi] = useState();
     const [error, setError] = useState("")
     const [open, setOpen] = useState(false);
-    const [doctorName, setDoctorName] = useState("")
+    const [registrarName, setRegistrarName] = useState("")
+    const [registrarID, setRegistrarID] = useState("")
     const [gender, setGender] = useState('female');
     const [maritalStatus, setMaritalStatus] = useState('unmarried');
     const [bg, setBG] = useState('');
@@ -70,12 +71,13 @@ export default function PatientRegistration() {
     useEffect(() => {
         async function fetchData() {
             const UID = getUID();
-            const name = await fetchRegistrarName(UID);
-            setDoctorName(name)
+            const data = await fetchRegistrarData(UID);
+            setRegistrarName(data['name'])
+            setRegistrarID(data['id'])
         }
         fetchData();
 
-    }, [doctorName])
+    }, [registrarName, registrarID])
 
     useEffect(() => {
         async function fetchData() {
@@ -85,7 +87,10 @@ export default function PatientRegistration() {
     }, [])
 
     const handleRegister = async () => {
+        let newDate = new Date()
+
         const data = {
+            "uid": Math.floor(10000000000 + Math.random() * 90000000000),
             "firstName": firstNameRef.current.value,
             "middleName": middleNameRef.current.value,
             "lastName": lastNameRef.current.value,
@@ -112,7 +117,10 @@ export default function PatientRegistration() {
             "city": cityRef.current.value,
             "address1": addressLine1Ref.current.value,
             "address2": addressLine2Ref.current.value,
-            "pincode": pincodeRef.current.value
+            "pincode": pincodeRef.current.value,
+            "registrarID": registrarID,
+            "registrarName": registrarName,
+            "registrationDate": `${newDate.getFullYear()}${'-'}${newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : `${newDate.getMonth() + 1}`}${'-'}${newDate.getDate()}`
         }
         addRegistration(data);
 
@@ -200,7 +208,7 @@ export default function PatientRegistration() {
             <div className="navbar-registration">
                 <AccountCircleIcon />
                 <Typography style={{ marginRight: "2.5rem", marginLeft: "0.5rem" }}>
-                    {doctorName}
+                    {registrarName}
                 </Typography>
                 <Typography>
                     <Link to="/" onClick={handleLogout}>Logout</Link>
