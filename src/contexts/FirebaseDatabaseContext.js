@@ -14,7 +14,7 @@ export const compareFromDatabase = async (faceprint) => {
         }
         sum = Math.sqrt(sum)
         console.log(sum)
-        if (sum <= 5) {
+        if (sum < 1) {
             return "duplicate-registration"
         }
     }
