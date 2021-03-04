@@ -163,6 +163,10 @@ export default function PatientRegistration() {
         setOpen(false);
     };
 
+    const handleOTPVerify = () => {
+
+    }
+
     const handleGenderChange = (event) => {
         setGender(event.target.value);
     };
@@ -237,40 +241,42 @@ export default function PatientRegistration() {
                     <Typography variant="h4" style={{ margin: "1rem", color: "#1990EA" }}>
                         Personal Identity
                     </Typography>
-                    <Grid container spacing={6}>
-                        <Grid container item xs={6}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="aadhar-no"
-                                label="Aadhar Number"
-                                name="aadhar"
-                                size="small"
-                                inputRef={aadharRef}
-                            />
+                    <form onSubmit={handleOTPVerify}>
+                        <Grid container spacing={6}>
+                            <Grid container item xs={6}>
+                                <TextField
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="aadhar-no"
+                                    label="Aadhar Number"
+                                    name="aadhar"
+                                    size="small"
+                                    inputRef={aadharRef}
+                                />
+                            </Grid>
+                            <Grid container item xs={6}>
+                                <TextField
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="otp"
+                                    label="OTP"
+                                    name="otp"
+                                    size="small"
+                                    inputRef={otpRef}
+                                />
+                            </Grid>
+                            <Grid container item xs={6}>
+                                <Button type="submit" variant="contained" color="primary">
+                                    Verify
+                                </Button>
+                            </Grid>
                         </Grid>
-                        <Grid container item xs={6}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="otp"
-                                label="OTP"
-                                name="otp"
-                                size="small"
-                                inputRef={otpRef}
-                            />
-                        </Grid>
-                        <Grid container item xs={6}>
-                            <Button variant="contained" color="primary">
-                                Verify
-                            </Button>
-                        </Grid>
-                    </Grid>
+                    </form>
                 </div>
                 <div className="form-container-registration">
-                    <form>
+                    <form onSubmit={handleRegister}>
                         <div className="patient-details">
                             <Grid container spacing={3}>
                                 <Grid container item xs={4}>
@@ -598,7 +604,7 @@ export default function PatientRegistration() {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Button variant="contained" color="primary" size="large" onClick={handleRegister} style={{ position: "relative", top: "6rem" }}>
+                        <Button type="submit" variant="contained" color="primary" size="large" style={{ position: "relative", top: "6rem" }}>
                             Register
                         </Button>
                     </form>

@@ -45,9 +45,9 @@ export default function RegistrationList() {
           valueGetter: (params) =>
             `${params.getValue('firstName') || ''} ${params.getValue('lastName') || ''}`,
         },
-      ];
-      
-      const rows = [
+    ];
+    
+    const rows = [
         { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
         { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
         { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
@@ -57,7 +57,7 @@ export default function RegistrationList() {
         { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
         { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
         { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-      ];
+    ];
 
     return (
         <div className="container-list">
