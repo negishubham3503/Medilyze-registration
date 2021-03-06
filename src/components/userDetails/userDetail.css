@@ -1,0 +1,44 @@
+.userContainer {
+    padding: 2rem;
+    color: #132636;
+}
+
+.paper {
+    padding: 1rem;
+}
+
+.paper-detail {
+    padding: 2rem;
+}
+
+#user-detail-image {
+    height: 6rem;
+    width: 6rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem; 
+}
+
+#send-message {
+    background-color: white;
+    color: #132636;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+#send-message:hover {
+    background-color: #3f51b5;
+    color: white;
+}
+
+#user-detail-personal {
+    display: block;
+}
+
+#list-text-details {
+    font-size: 0.7rem;
+}
+
+.notes-details {
+    background-color: #F2F5F9;
+    padding: 1rem;
+}

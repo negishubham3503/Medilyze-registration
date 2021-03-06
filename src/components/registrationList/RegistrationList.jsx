@@ -1,18 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import './RegistrationList.css';
+import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
 import PrintIcon from '@material-ui/icons/Print';
 import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import CloseIcon from '@material-ui/icons/Close';
 import ForumIcon from '@material-ui/icons/Forum';
-import { DataGrid } from '@material-ui/data-grid';
-import { Avatar, Badge, Button, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import { DataGrid, GridToolbar } from '@material-ui/data-grid';
+import { AppBar, Avatar, Badge, Box, Button, FormControl, Grid, InputAdornment, MenuItem, Select, Tab, Tabs, TextField, Typography, makeStyles, Dialog, DialogTitle, DialogContent } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { fetchRegistrationRecords } from "../../contexts/FirebaseDatabaseContext";
+import UserDetail from '../userDetails/UserDetail';
 
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.paper,
+    },
+}));
 
 export default function RegistrationList() {
+    const [value, setValue] = useState(0);
+    const [open, setOpen] = useState(false);
     const [status, setStatus] = useState("All");
     const [sort, setSort] = useState("Default");
     const [records, setRecords] = useState({})
@@ -39,38 +84,85 @@ export default function RegistrationList() {
 
     }
 
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'dateOfRegistration', headerName: 'Date of Registration', width: 130 },
+        { field: 'id', headerName: 'ID', width: 150 },
+        { field: 'dateOfRegistration', headerName: 'Date of Registration', width: 150 },
         { field: 'name', headerName: 'Name', width: 160 },
-        { field: 'dob', headerName: 'Date of Birth', width: 150 },
+        { field: 'dob', headerName: 'Date of Birth', width: 130 },
         { field: 'registrarName', headerName: 'Registrar Name', width: 160 },
         { field: 'registrarID', headerName: 'Registrar ID', width: 150 },
         { field: 'poi', headerName: 'PoI', width: 150 },
         { field: 'poiID', headerName: 'PoI ID', width: 150 },
+        {
+            field: "verification",
+            headerName: " ",
+            disableClickEventBubbling: true,
+            renderCell: (params) => {
+                const onClick = () => {
+                    const api = params.api;
+                    const fields = api
+                    .getAllColumns()
+                    .map((c) => c.field)
+                    .filter((c) => c !== "__check__" && !!c);
+                    const thisRow = {};
+            
+                    fields.forEach((f) => {
+                    thisRow[f] = params.getValue(f);
+                    setOpen(true);
+                    });
+                };
+            
+                return (
+                    <div>
+                        <Button variant="contained" color="secondary" onClick={onClick}>Verify</Button>
+                        <Dialog open={open} aria-labelledby="user-detail" fullWidth maxWidth="xl" style={{padding: "0rem 4rem 0rem 3rem"}}>
+                            <DialogTitle className="dialog-title" style={{ color: "#132636", backgroundColor: "#F2F5F9" }}>
+                                <PersonOutlineIcon fontSize="large" style={{marginBottom: "-0.5rem", marginRight: "0.4rem"}} color="primary" />
+                                <Typography variant="h5" style={{display: "contents"}}>
+                                    <strong>Diane Cooper</strong>
+                                </Typography>
+                                <Button style={{borderRadius: "40%", marginLeft: "55rem"}}><CloseIcon onClick={handleClose} /></Button>
+                            </DialogTitle>
+                            <DialogContent style={{backgroundColor: "#F2F5F9"}}>
+                                <UserDetail />
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                )
+            }
+        }
 
     ];
 
-    var rows = []
-
+    let rows = [];
     for (var i = 2; i < records.length; i++) {
         var name = records[i]['firstName'] + " " + records[i]['lastName']
         rows.push({ id: records[i]['uid'], dateOfRegistration: records[i]['registrationDate'], name: name, dob: records[i]['dob'], registrarName: records[i]['registrarName'], registrarID: records[i]['registrarID'], poi: records[i]['poi'], poiID: records[i]['poiNumber'] })
-        console.log()
     }
 
+    let rowsApproved = [];
+    // uncomment and make changes accordingly
+    // for (var i = 2; i < records.length; i++) {
+    //     var name = records[i]['firstName'] + " " + records[i]['lastName']
+    //     rowsApproved.push({ id: records[i]['uid'], dateOfRegistration: records[i]['registrationDate'], name: name, dob: records[i]['dob'], registrarName: records[i]['registrarName'], registrarID: records[i]['registrarID'], poi: records[i]['poi'], poiID: records[i]['poiNumber'] })
+    //     console.log()
+    // }
 
-    // const rows = [
-    //     { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    //     { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    //     { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    //     { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    //     { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    //     { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    //     { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    //     { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    //     { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-    // ];
+    let rowsRejected = [];
+    //uncomment and make changes accordingly
+    // for (var i = 2; i < records.length; i++) {
+    //     var name = records[i]['firstName'] + " " + records[i]['lastName']
+    //     rowsRejected.push({ id: records[i]['uid'], dateOfRegistration: records[i]['registrationDate'], name: name, dob: records[i]['dob'], registrarName: records[i]['registrarName'], registrarID: records[i]['registrarID'], poi: records[i]['poi'], poiID: records[i]['poiNumber'] })
+    //     console.log()
+    // }
 
     return (
         <div className="container-list">
@@ -184,16 +276,58 @@ export default function RegistrationList() {
                 </div>
             </div>
             <div style={{ width: '100%', backgroundColor: "white" }}>
-                <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    pageSize={5}
-                    checkboxSelection
-                    autoHeight
-                    rowHeight={75}
-                    headerHeight={75}
-                    rowsPerPageOptions={[5, 10, 15]}
-                />
+                <AppBar position="static">
+                    <Tabs value={value} onChange={handleChange} aria-label="registraion-lists" style={{ backgroundColor: "#1990EA" }}>
+                        <Tab label="Pending" {...a11yProps(0)} />
+                        <Tab label="Approved" {...a11yProps(1)} />
+                        <Tab label="Rejected" {...a11yProps(1)} />
+                    </Tabs>
+                </AppBar>
+                <TabPanel value={value} index={0}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={5}
+                        checkboxSelection
+                        autoHeight
+                        rowHeight={60}
+                        headerHeight={60}
+                        rowsPerPageOptions={[5, 10, 15]}
+                        components={{
+                            Toolbar: GridToolbar,
+                        }}
+                    />
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <DataGrid
+                        rows={rowsApproved}
+                        columns={columns}
+                        pageSize={5}
+                        checkboxSelection
+                        autoHeight
+                        rowHeight={60}
+                        headerHeight={60}
+                        rowsPerPageOptions={[5, 10, 15]}
+                        components={{
+                            Toolbar: GridToolbar,
+                        }}
+                    />
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                    <DataGrid
+                        rows={rowsRejected}
+                        columns={columns}
+                        pageSize={5}
+                        checkboxSelection
+                        autoHeight
+                        rowHeight={60}
+                        headerHeight={60}
+                        rowsPerPageOptions={[5, 10, 15]}
+                        components={{
+                            Toolbar: GridToolbar,
+                        }}
+                    />
+                </TabPanel>
             </div>
         </div>
     )
