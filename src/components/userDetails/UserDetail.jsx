@@ -1,56 +1,87 @@
 import React, { useState } from 'react';
 import './userDetail.css';
+import { updateStatus } from "../../contexts/FirebaseDatabaseContext.js"
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import { Avatar, Grid, Paper, Typography, Button, List, ListItem, ListItemText } from '@material-ui/core';
 
 export default function UserDetail(props) {
+    const approve = async () => {
+        await updateStatus(props.data.uid, 'approved');
+    };
+    const reject = async () => {
+        await updateStatus(props.data.uid, 'rejected');
+    };
     const userImg = "";
     return (
         <div className="user-container">
             <Grid container spacing={2}>
-                <Grid container item xs={8} spacing={1}>
-                    <Grid container item xs={4}>
-                        <Paper className="paper" elevation={1} style={{width: "100%", textAlign: "-webkit-center"}}>
-                            <Avatar src={userImg} id="user-detail-image" />
-                            <Typography variant="h6" style={{color: "#132636"}}>
-                                <strong>Diane Cooper</strong>
+                <Grid container item xs={12} spacing={1}>
+                    <Grid container item xs={3}>
+                        <Paper className="paper" elevation={1} style={{ width: "100%", textAlign: "-webkit-center" }}>
+                            <Avatar src={props.data.imageUrl} id="user-detail-image" />
+                            <Typography variant="h6" style={{ color: "#132636" }}>
+                                <strong>{props.data.firstName + " " + props.data.middleName + " " + props.data.lastName}</strong>
                             </Typography>
-                            <Typography variant="subtitle2" style={{color: "#AFB7BD"}}>
-                                diane_cooper@medilyze.com
+                            <Typography variant="subtitle2" style={{ color: "#AFB7BD" }}>
+                                {props.data.email}
                             </Typography>
-                            <Typography variant="subtitle2" style={{color: "#132636"}}>
-                                21, Female
+                            <Typography variant="subtitle2" style={{ color: "#132636" }}>
+                                {props.data.phone}
                             </Typography>
                             <Button variant="contained" id="send-message">
                                 Send Message
                             </Button>
                         </Paper>
                     </Grid>
-                    <Grid container item xs={8}>
-                        <Paper className="paper-detail" elevation={1} style={{width: "100%", color: "#6D7682"}}>
+                    <Grid container item xs={9}>
+                        <Paper className="paper-detail" elevation={1} style={{ width: "100%", color: "#6D7682" }}>
                             <Grid container spacing={3}>
                                 <Grid container item xs={4} id="user-detail-personal">
                                     <Typography variant="subtitle2">
-                                        Marital Status
+                                        Date of Birth
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>Unmarried</strong>
-                                    </Typography>
-                                </Grid>
-                                <Grid container item xs={4} id="user-detail-personal">
-                                    <Typography variant="subtitle2">
-                                        Birthday
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        <strong>Feb 24th, 1997</strong>
+                                        <strong>{props.data.dob}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
                                     <Typography variant="subtitle2">
-                                        Phone Number
+                                        Father's Name
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>(+91)9876543210</strong>
+                                        <strong>{props.data.fatherName}</strong>
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={4} id="user-detail-personal">
+                                    <Typography variant="subtitle2">
+                                        Mother's Name
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        <strong>{props.data.motherName}</strong>
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={4} id="user-detail-personal">
+                                    <Typography variant="subtitle2">
+                                        Gender
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        <strong>{props.data.gender}</strong>
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={4} id="user-detail-personal">
+                                    <Typography variant="subtitle2">
+                                        Emergency Contact Number
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        <strong>{props.data.emergencyContact}</strong>
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={4} id="user-detail-personal">
+                                    <Typography variant="subtitle2">
+                                        Emergency Contact Person
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        <strong>{props.data.emergencyPerson}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
@@ -58,15 +89,19 @@ export default function UserDetail(props) {
                                         Street Address
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>JL Dipanegard No. 21</strong>
+                                        <strong>{props.data.address1 + ", " + props.data.address2}</strong>
                                     </Typography>
                                 </Grid>
+
+
+
+
                                 <Grid container item xs={4} id="user-detail-personal">
                                     <Typography variant="subtitle2">
                                         City
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>Cilacap</strong>
+                                        <strong>{props.data.city}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
@@ -74,23 +109,43 @@ export default function UserDetail(props) {
                                         PIN Code
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>655849</strong>
+                                        <strong>{props.data.pincode}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
                                     <Typography variant="subtitle2">
-                                        Member Status
+                                        Country
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>Active Member</strong>
+                                        <strong>{props.data.country}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
                                     <Typography variant="subtitle2">
-                                        Registered Date
+                                        Marital Status
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>Feb 24th, 2019</strong>
+                                        <strong>{props.data.maritalStatus}</strong>
+                                    </Typography>
+                                </Grid>
+                                {props.data.maritalStatus == "married" ?
+                                    <Grid container item xs={4} id="user-detail-personal">
+                                        <Typography variant="subtitle2">
+                                            Spouse Name
+                                </Typography>
+                                        <Typography variant="subtitle2">
+                                            <strong>{props.data.spouseName}</strong>
+                                        </Typography>
+                                    </Grid> :
+                                    <Grid >
+
+                                    </Grid>}
+                                <Grid container item xs={4} id="user-detail-personal">
+                                    <Typography variant="subtitle2">
+                                        Registration Date
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        <strong>{props.data.registrationDate}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
@@ -98,32 +153,56 @@ export default function UserDetail(props) {
                                         Blood Group
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>AB+</strong>
+                                        <strong>{props.data.bloodGroup}</strong>
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={4} id="user-detail-personal">
+                                    <Typography variant="subtitle2">
+                                        Proof of Identity
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        <strong>{props.data.poi}</strong>
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={4} id="user-detail-personal">
+                                    <Typography variant="subtitle2">
+                                        Proof of Identity Document Number
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        <strong>{props.data.poiNumber}</strong>
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={4} id="user-detail-personal">
+                                    <Typography variant="subtitle2">
+                                        Verification Status
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        <strong>{props.data.verification}</strong>
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </Paper>
                     </Grid>
-                    <Grid container item xs={12} style={{marginTop: "0.5rem"}}>
-                        <Paper className="paper-detail" elevation={1} style={{width: "100%"}}>
-                            <Typography variant="subtitle1" style={{marginBottom: "1rem"}}>
+                    <Grid container item xs={12} style={{ marginTop: "0.5rem" }}>
+                        <Paper className="paper-detail" elevation={1} style={{ width: "100%" }}>
+                            <Typography variant="subtitle1" style={{ marginBottom: "1rem" }}>
                                 <strong>Insurance Details</strong>
                             </Typography>
-                            <Grid container spacing={3} style={{backgroundColor: "#F2F5F9", padding: "1rem"}}>
+                            <Grid container spacing={3} style={{ backgroundColor: "#F2F5F9", padding: "1rem" }}>
                                 <Grid container item xs={4} id="user-detail-personal">
                                     <Typography variant="subtitle2">
-                                        Company Name
+                                        Insurance Company Name
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>Vijay Mallya Healthcare</strong>
+                                        <strong>{props.data.insuranceCompany}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
                                     <Typography variant="subtitle2">
-                                        Organization Name
+                                        Insured Organization Name
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>Kingfisher</strong>
+                                        <strong>{props.data.organizationName}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
@@ -131,7 +210,7 @@ export default function UserDetail(props) {
                                         Health Card Number
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>9876543210</strong>
+                                        <strong>{props.data.healthCardNumber}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
@@ -139,7 +218,7 @@ export default function UserDetail(props) {
                                         Policy Number
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>VM128244274</strong>
+                                        <strong>{props.data.policyNumber}</strong>
                                     </Typography>
                                 </Grid>
                                 <Grid container item xs={4} id="user-detail-personal">
@@ -147,63 +226,24 @@ export default function UserDetail(props) {
                                         Valid Upto
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        <strong>30th Feb 3000</strong>
+                                        <strong>{props.data.insuranceValidity}</strong>
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </Paper>
                     </Grid>
                 </Grid>
-                <Grid container item xs={4} spacing={2}>
-                    <Grid container item xs={12}>
-                        <Paper elevation={1} style={{width: "100%"}} style={{padding: "0.4rem"}}>
-                            <div style={{display: "flex", padding: "0.6rem"}}>
-                                <Typography variant="subtitle1" style={{color: "#132636"}}>
-                                    <strong>Notes</strong>
-                                </Typography>
-                                <Typography variant="subtitle2" color="primary" style={{marginTop: "0.25rem", marginLeft: "14rem"}}>
-                                    See all
-                                </Typography>
-                            </div>
-                            <div className="notes-details">
-                                <List>
-                                    <ListItem style={{padding: "0.3rem"}}>
-                                        <ListItemText style={{fontSize: "0.7rem"}}>
-                                            This patient is 
-                                        </ListItemText>
-                                    </ListItem>
-                                    <ListItem style={{padding: "0.3rem"}}>
-                                        <ListItemText style={{fontSize: "0.7rem"}}>
-                                            lorem ipsum 
-                                        </ListItemText>
-                                    </ListItem>
-                                    <ListItem style={{padding: "0.3rem"}}>
-                                        <ListItemText style={{fontSize: "0.7rem"}}>
-                                            has allergic history
-                                        </ListItemText>
-                                    </ListItem>
-                                </List>
-                                <Button variant="contained" color="primary" size="small" style={{marginLeft: "15rem"}}>
-                                    Save
-                                </Button>
-                            </div>
-                        </Paper>
-                    </Grid>
-                    <Grid container item xs={12}>
-                        <Paper className="paper" elevation={1} style={{width: "100%"}}>
-                            <div style={{display: "flex", padding: "0.6rem"}}>
-                                <Typography variant="subtitle1" style={{color: "#132636"}}>
-                                    <strong>Files/Documents</strong>
-                                </Typography>
-                                <PostAddIcon color="primary" style={{marginLeft: "5rem"}} />
-                                <Typography variant="subtitle2" color="primary" style={{marginTop: "0.25rem"}}>
-                                    Add Files
-                                </Typography>
-                            </div>
-                        </Paper>
-                    </Grid>
+
+                <Grid container item xs={4} id="user-detail-personal">
+                    <Button onClick={approve} variant="contained" color="primary" size="large" style={{ position: "relative", left: "32rem" }}>
+                        Approve
+                        </Button>
+                    <Button onClick={reject} variant="contained" color="primary" size="large" style={{ position: "relative", left: "34rem" }}>
+                        Reject
+                        </Button>
                 </Grid>
             </Grid>
+
         </div>
     )
 }

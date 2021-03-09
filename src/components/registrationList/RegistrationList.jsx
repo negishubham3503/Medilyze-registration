@@ -11,8 +11,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import ForumIcon from '@material-ui/icons/Forum';
 import { DataGrid, GridToolbar } from '@material-ui/data-grid';
 import { AppBar, Avatar, Badge, Box, Button, FormControl, Grid, InputAdornment, MenuItem, Select, Tab, Tabs, TextField, Typography, makeStyles, Dialog, DialogTitle, DialogContent } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { fetchRegistrationRecords } from "../../contexts/FirebaseDatabaseContext";
+import { Link, useHistory } from 'react-router-dom';
+import { fetchRegistrationRecords, getRecord } from "../../contexts/FirebaseDatabaseContext";
+import { fetchVerifierData } from "../../contexts/FirestoreContext";
+import { useAuth } from "../../contexts/AuthContext";
+
+
 import UserDetail from '../userDetails/UserDetail';
 
 function TabPanel(props) {
@@ -56,11 +60,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RegistrationList() {
+    const { login, logout, getUID } = useAuth()
+
     const [value, setValue] = useState(0);
     const [open, setOpen] = useState(false);
     const [status, setStatus] = useState("All");
     const [sort, setSort] = useState("Default");
     const [records, setRecords] = useState({})
+    const [pendingRows, setPendingRows] = useState([])
+    const [approvedRows, setApprovedRows] = useState([])
+    const [rejectedRows, setRejectedRows] = useState([])
+    const [record, setRecord] = useState({})
+    const [verifierName, setVerifierName] = useState("")
+    const [verifierID, setVerifierID] = useState("")
+    const [error, setError] = useState("")
+    const history = useHistory()
+
+
+
+
 
     const handleStatusChange = (event) => {
         setStatus(event.target.value);
@@ -72,16 +90,162 @@ export default function RegistrationList() {
 
     useEffect(() => {
         async function fetchData() {
-            const data = await fetchRegistrationRecords();
-            setRecords(data)
-            // console.log(data);
+            const UID = getUID();
+            const data = await fetchVerifierData(UID);
+            setVerifierName(data['name'])
+            setVerifierID(data['id'])
         }
         fetchData();
 
-    }, [records])
+    }, [verifierName, verifierID])
 
-    function handleLogout() {
+    useEffect(() => {
+        async function fetchData() {
+            const records = await fetchRegistrationRecords();
+            let rows = [];
+            for (var i = 2; i < records.length; i++) {
+                if (records[i]['verification'] == 'approved') {
+                    var name = records[i]['firstName'] + " " + records[i]['lastName']
+                    rows.push({
+                        id: records[i]['uid'],
+                        dateOfRegistration: records[i]['registrationDate'],
+                        name: name,
+                        dob: records[i]['dob'],
+                        registrarName: records[i]['registrarName'],
+                        registrarID: records[i]['registrarID'],
+                        poi: records[i]['poi'],
+                        poiID: records[i]['poiNumber'],
+                        address1: records[i]['address1'],
+                        address2: records[i]['address2'],
+                        bloodGroup: records[i]['bloodGroup'],
+                        city: records[i]['city'],
+                        country: records[i]['country'],
+                        email: records[i]['email'],
+                        emergencyContact: records[i]['emergencyContact'],
+                        emergencyPerson: records[i]['emergencyPerson'],
+                        fatherName: records[i]['fatherName'],
+                        gender: records[i]['gender'],
+                        healthCardNumber: records[i]['healthCardNumber'],
+                        insuranceCompany: records[i]['insuranceCompany'],
+                        insuranceValidity: records[i]['insuranceValidity'],
+                        maritalStatus: records[i]['maritalStatus'],
+                        organizationName: records[i]['organizationName'],
+                        motherName: records[i]['motherName'],
+                        phone: records[i]['phone'],
+                        pincode: records[i]['pincode'],
+                        policyNumber: records[i]['policyNumber'],
+                        spouseName: records[i]['spouseName'],
+                        state: records[i]['state'],
+                    })
+                }
+            }
+            setApprovedRows(rows);
+        }
+        fetchData();
 
+    }, [approvedRows])
+
+    useEffect(() => {
+        async function fetchData() {
+            const records = await fetchRegistrationRecords();
+            let rows = [];
+            for (var i = 2; i < records.length; i++) {
+                if (records[i]['verification'] == 'pending') {
+                    var name = records[i]['firstName'] + " " + records[i]['lastName']
+                    rows.push({
+                        id: records[i]['uid'],
+                        dateOfRegistration: records[i]['registrationDate'],
+                        name: name,
+                        dob: records[i]['dob'],
+                        registrarName: records[i]['registrarName'],
+                        registrarID: records[i]['registrarID'],
+                        poi: records[i]['poi'],
+                        poiID: records[i]['poiNumber'],
+                        address1: records[i]['address1'],
+                        address2: records[i]['address2'],
+                        bloodGroup: records[i]['bloodGroup'],
+                        city: records[i]['city'],
+                        country: records[i]['country'],
+                        email: records[i]['email'],
+                        emergencyContact: records[i]['emergencyContact'],
+                        emergencyPerson: records[i]['emergencyPerson'],
+                        fatherName: records[i]['fatherName'],
+                        gender: records[i]['gender'],
+                        healthCardNumber: records[i]['healthCardNumber'],
+                        insuranceCompany: records[i]['insuranceCompany'],
+                        insuranceValidity: records[i]['insuranceValidity'],
+                        maritalStatus: records[i]['maritalStatus'],
+                        organizationName: records[i]['organizationName'],
+                        motherName: records[i]['motherName'],
+                        phone: records[i]['phone'],
+                        pincode: records[i]['pincode'],
+                        policyNumber: records[i]['policyNumber'],
+                        spouseName: records[i]['spouseName'],
+                        state: records[i]['state'],
+                    })
+                }
+            }
+            setPendingRows(rows);
+        }
+        fetchData();
+
+    }, [pendingRows])
+
+    useEffect(() => {
+        async function fetchData() {
+            const records = await fetchRegistrationRecords();
+            let rows = [];
+            for (var i = 2; i < records.length; i++) {
+                if (records[i]['verification'] == 'rejected') {
+                    var name = records[i]['firstName'] + " " + records[i]['lastName']
+                    rows.push({
+                        id: records[i]['uid'],
+                        dateOfRegistration: records[i]['registrationDate'],
+                        name: name,
+                        dob: records[i]['dob'],
+                        registrarName: records[i]['registrarName'],
+                        registrarID: records[i]['registrarID'],
+                        poi: records[i]['poi'],
+                        poiID: records[i]['poiNumber'],
+                        address1: records[i]['address1'],
+                        address2: records[i]['address2'],
+                        bloodGroup: records[i]['bloodGroup'],
+                        city: records[i]['city'],
+                        country: records[i]['country'],
+                        email: records[i]['email'],
+                        emergencyContact: records[i]['emergencyContact'],
+                        emergencyPerson: records[i]['emergencyPerson'],
+                        fatherName: records[i]['fatherName'],
+                        gender: records[i]['gender'],
+                        healthCardNumber: records[i]['healthCardNumber'],
+                        insuranceCompany: records[i]['insuranceCompany'],
+                        insuranceValidity: records[i]['insuranceValidity'],
+                        maritalStatus: records[i]['maritalStatus'],
+                        organizationName: records[i]['organizationName'],
+                        motherName: records[i]['motherName'],
+                        phone: records[i]['phone'],
+                        pincode: records[i]['pincode'],
+                        policyNumber: records[i]['policyNumber'],
+                        spouseName: records[i]['spouseName'],
+                        state: records[i]['state'],
+                    })
+                }
+            }
+            setRejectedRows(rows);
+        }
+        fetchData();
+
+    }, [rejectedRows])
+
+    async function handleLogout() {
+        setError("")
+
+        try {
+            await logout()
+            history.push("/")
+        } catch {
+            setError("Failed to log out")
+        }
     }
 
     const handleChange = (event, newValue) => {
@@ -94,9 +258,8 @@ export default function RegistrationList() {
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 150 },
-        { field: 'dateOfRegistration', headerName: 'Date of Registration', width: 150 },
-        { field: 'name', headerName: 'Name', width: 160 },
-        { field: 'dob', headerName: 'Date of Birth', width: 130 },
+        { field: 'dateOfRegistration', headerName: 'Date of Registration', width: 120 },
+        { field: 'name', headerName: 'Name', width: 150 },
         { field: 'registrarName', headerName: 'Registrar Name', width: 160 },
         { field: 'registrarID', headerName: 'Registrar ID', width: 150 },
         { field: 'poi', headerName: 'PoI', width: 150 },
@@ -106,33 +269,36 @@ export default function RegistrationList() {
             headerName: " ",
             disableClickEventBubbling: true,
             renderCell: (params) => {
-                const onClick = () => {
+                const onClick = async () => {
                     const api = params.api;
                     const fields = api
-                    .getAllColumns()
-                    .map((c) => c.field)
-                    .filter((c) => c !== "__check__" && !!c);
+                        .getAllColumns()
+                        .map((c) => c.field)
+                        .filter((c) => c !== "__check__" && !!c);
                     const thisRow = {};
-            
+
                     fields.forEach((f) => {
-                    thisRow[f] = params.getValue(f);
-                    setOpen(true);
+                        thisRow[f] = params.getValue(f);
+                        setOpen(true);
                     });
+                    const data = await getRecord(thisRow['id']);
+                    setRecord(data);
+
                 };
-            
+
                 return (
                     <div>
-                        <Button variant="contained" color="secondary" onClick={onClick}>Verify</Button>
-                        <Dialog open={open} aria-labelledby="user-detail" fullWidth maxWidth="xl" style={{padding: "0rem 4rem 0rem 3rem"}}>
+                        <Button variant="contained" color="secondary" onClick={onClick}>View</Button>
+                        <Dialog open={open} aria-labelledby="user-detail" fullWidth maxWidth="xl" style={{ padding: "0rem 4rem 0rem 3rem" }}>
                             <DialogTitle className="dialog-title" style={{ color: "#132636", backgroundColor: "#F2F5F9" }}>
-                                <PersonOutlineIcon fontSize="large" style={{marginBottom: "-0.5rem", marginRight: "0.4rem"}} color="primary" />
-                                <Typography variant="h5" style={{display: "contents"}}>
-                                    <strong>Diane Cooper</strong>
+                                <PersonOutlineIcon fontSize="large" style={{ marginBottom: "-0.5rem", marginRight: "0.4rem" }} color="primary" />
+                                <Typography variant="h5" style={{ display: "contents" }}>
+                                    <strong>Profile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
                                 </Typography>
-                                <Button style={{borderRadius: "40%", marginLeft: "55rem"}}><CloseIcon onClick={handleClose} /></Button>
+                                <Button style={{ borderRadius: "40%", marginLeft: "55rem" }}><CloseIcon onClick={handleClose} /></Button>
                             </DialogTitle>
-                            <DialogContent style={{backgroundColor: "#F2F5F9"}}>
-                                <UserDetail />
+                            <DialogContent style={{ backgroundColor: "#F2F5F9" }}>
+                                <UserDetail data={record} />
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -142,34 +308,12 @@ export default function RegistrationList() {
 
     ];
 
-    let rows = [];
-    for (var i = 2; i < records.length; i++) {
-        var name = records[i]['firstName'] + " " + records[i]['lastName']
-        rows.push({ id: records[i]['uid'], dateOfRegistration: records[i]['registrationDate'], name: name, dob: records[i]['dob'], registrarName: records[i]['registrarName'], registrarID: records[i]['registrarID'], poi: records[i]['poi'], poiID: records[i]['poiNumber'] })
-    }
-
-    let rowsApproved = [];
-    // uncomment and make changes accordingly
-    // for (var i = 2; i < records.length; i++) {
-    //     var name = records[i]['firstName'] + " " + records[i]['lastName']
-    //     rowsApproved.push({ id: records[i]['uid'], dateOfRegistration: records[i]['registrationDate'], name: name, dob: records[i]['dob'], registrarName: records[i]['registrarName'], registrarID: records[i]['registrarID'], poi: records[i]['poi'], poiID: records[i]['poiNumber'] })
-    //     console.log()
-    // }
-
-    let rowsRejected = [];
-    //uncomment and make changes accordingly
-    // for (var i = 2; i < records.length; i++) {
-    //     var name = records[i]['firstName'] + " " + records[i]['lastName']
-    //     rowsRejected.push({ id: records[i]['uid'], dateOfRegistration: records[i]['registrationDate'], name: name, dob: records[i]['dob'], registrarName: records[i]['registrarName'], registrarID: records[i]['registrarID'], poi: records[i]['poi'], poiID: records[i]['poiNumber'] })
-    //     console.log()
-    // }
-
     return (
         <div className="container-list">
             <div className="navbar-list">
                 <AccountCircleIcon style={{ marginRight: "0.4rem" }} />
                 <Typography style={{ marginRight: "2rem" }}>
-                    Admin Name
+                    {verifierName}
                 </Typography>
                 <Typography>
                     <Link onClick={handleLogout}>
@@ -285,10 +429,9 @@ export default function RegistrationList() {
                 </AppBar>
                 <TabPanel value={value} index={0}>
                     <DataGrid
-                        rows={rows}
+                        rows={pendingRows}
                         columns={columns}
                         pageSize={5}
-                        checkboxSelection
                         autoHeight
                         rowHeight={60}
                         headerHeight={60}
@@ -300,10 +443,9 @@ export default function RegistrationList() {
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <DataGrid
-                        rows={rowsApproved}
+                        rows={approvedRows}
                         columns={columns}
                         pageSize={5}
-                        checkboxSelection
                         autoHeight
                         rowHeight={60}
                         headerHeight={60}
@@ -315,10 +457,9 @@ export default function RegistrationList() {
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                     <DataGrid
-                        rows={rowsRejected}
+                        rows={rejectedRows}
                         columns={columns}
                         pageSize={5}
-                        checkboxSelection
                         autoHeight
                         rowHeight={60}
                         headerHeight={60}
@@ -328,6 +469,7 @@ export default function RegistrationList() {
                         }}
                     />
                 </TabPanel>
+
             </div>
         </div>
     )

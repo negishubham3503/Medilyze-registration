@@ -8,7 +8,7 @@ import Alert from '@material-ui/lab/Alert';
 import logo from "../../images/logo.png";
 import containerImage from "../../images/7882.png"
 import { useAuth } from "../../contexts/AuthContext";
-import { checkRegistrar } from "../../contexts/FirestoreContext";
+import { checkUser } from "../../contexts/FirestoreContext";
 
 
 import { useHistory } from "react-router-dom";
@@ -29,13 +29,15 @@ export default function Login() {
             setLoading(true)
             await login(emailRef.current.value, passwordRef.current.value)
             const UID = getUID();
-            const status = await checkRegistrar(UID)
+            const status = await checkUser(UID)
             console.log(status);
-            if (status == 'registered') {
-                history.push("/patientSearch")
+            if (status == 'registered-registrar') {
+                history.push("/patientRegistration")
+            }
+            else if (status == 'registered-verifier') {
+                history.push("/registrationList")
             }
             else {
-                console.log("User not permitted to login");
                 setError("User not permitted to login");
                 logout()
             }
@@ -60,7 +62,7 @@ export default function Login() {
                 <img src={logo} alt="logo" className="logo-image" />
                 <div className="headings">
                     <Typography className="heading" component="h2" variant="h3">
-                        Welcome!
+                        Registrar and Verifier Login
                     </Typography>
                     <Typography className="head-desc" component="h1" variant="h6">
                         Enter your credentials below

@@ -1,19 +1,39 @@
 import React, { useContext, useState, useEffect } from "react"
 import { db } from "../components/firebase"
 
-export const checkRegistrar = async (value) => {
+export const checkUser = async (value) => {
     const uidRef = db.collection('registrars').doc(value);
     const doc = await uidRef.get()
     if (doc.exists) {
-        return "registered";
+        return "registered-registrar";
     }
     else {
-        return "not-registered";
+        const uidRef = db.collection('verifiers').doc(value);
+        const doc = await uidRef.get()
+        if (doc.exists) {
+            return "registered-verifier"
+        }
+        else {
+            return "not-registered";
+        }
     }
 }
 
 export const fetchRegistrarData = async (value) => {
     const uidRef = db.collection('registrars').doc(value);
+    const doc = await uidRef.get()
+    if (doc.exists) {
+        let data = doc.data();
+        return data;
+    }
+    else {
+        console.log("No such document!");
+        return -999;
+    }
+}
+
+export const fetchVerifierData = async (value) => {
+    const uidRef = db.collection('verifiers').doc(value);
     const doc = await uidRef.get()
     if (doc.exists) {
         let data = doc.data();

@@ -21,6 +21,30 @@ export const compareFromDatabase = async (faceprint) => {
     return "new-registration"
 }
 
+export const getRecord = async (val) => {
+    let records = await rdbms.ref('pending_registrations/').once("value", snapshot => {
+    });
+    const data = records.val();
+    for (var i = 0; i < data.length; i++) {
+        if (data[i]['uid'] == val) {
+            return data[i];
+        }
+    }
+}
+
+export const updateStatus = async (val, status) => {
+    let records = await rdbms.ref('pending_registrations/').once("value", snapshot => {
+    });
+    let pos = i;
+    const data = records.val();
+    for (var i = 0; i < data.length; i++) {
+        if (data[i]['uid'] == val) {
+            pos = i;
+        }
+    }
+    await rdbms.ref('pending_registrations/' + pos).update({ 'verification': status })
+}
+
 export const fetchRegistrationRecords = async () => {
     let records = await rdbms.ref('pending_registrations/').once("value", snapshot => {
     });
@@ -48,6 +72,7 @@ export const addRegistration = async (data) => {
     let len = await name.val().length
     let datum = {}
     datum[len] = data
+    console.log(data)
 
     rdbms.ref('pending_registrations/').update(datum);
 

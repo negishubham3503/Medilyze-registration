@@ -19,8 +19,7 @@ import { compareFromDatabase, addRegistration, updateFacialRecords } from "../..
 import * as faceApi from "face-api.js";
 import { useAuth } from "../../contexts/AuthContext";
 import axios from 'axios';
-
-
+import { storage } from "../../components/firebase.js";
 
 export default function PatientRegistration() {
     const { login, logout, getUID } = useAuth()
@@ -60,6 +59,7 @@ export default function PatientRegistration() {
     const [state, setState] = useState("");
     const history = useHistory()
     var reg;
+    const [random, setRandom] = useState(Math.floor(10000000000 + Math.random() * 90000000000));
     const [imgSrc, setImgSrc] = useState("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg");
     const videoConstraints = {
         width: 300,
@@ -67,7 +67,6 @@ export default function PatientRegistration() {
         facingMode: "user"
     };
     const stateList = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", "Lakshadweep", "Puducherry"];
-
     useEffect(() => {
         async function fetchData() {
             const UID = getUID();
@@ -88,42 +87,45 @@ export default function PatientRegistration() {
 
     const handleRegister = async () => {
         let newDate = new Date()
+        await storage.ref('/').child(random + '.jpeg').getDownloadURL().then(url => {
+            const data = {
 
-        const data = {
-            "uid": Math.floor(10000000000 + Math.random() * 90000000000),
-            "firstName": firstNameRef.current.value,
-            "middleName": middleNameRef.current.value,
-            "lastName": lastNameRef.current.value,
-            "dob": dobRef.current.value,
-            "fatherName": fatherRef.current.value,
-            "motherName": motherRef.current.value,
-            "gender": gender,
-            "maritalStatus": maritalStatus,
-            "spouseName": spouseRef.current.value,
-            "bloodGroup": bg,
-            "poi": poi,
-            "poiNumber": poiNumberRef.current.value,
-            "insuranceCompany": insuranceCompanyRef.current.value,
-            "organizationName": organizationRef.current.value,
-            "policyNumber": policyNumberRef.current.value,
-            "healthCardNumber": healthCardNumberRef.current.value,
-            "insuranceValidity": validityRef.current.value,
-            "email": emailRef.current.value,
-            "phone": motherRef.current.value,
-            "emergencyContact": emergencyContactRef.current.value,
-            "emergencyPerson": emergencyContactPersonRef.current.value,
-            "country": "India",
-            "state": state,
-            "city": cityRef.current.value,
-            "address1": addressLine1Ref.current.value,
-            "address2": addressLine2Ref.current.value,
-            "pincode": pincodeRef.current.value,
-            "registrarID": registrarID,
-            "registrarName": registrarName,
-            "registrationDate": `${newDate.getFullYear()}${'-'}${newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : `${newDate.getMonth() + 1}`}${'-'}${newDate.getDate()}`
-        }
-        addRegistration(data);
-
+                "uid": random,
+                "firstName": firstNameRef.current.value,
+                "middleName": middleNameRef.current.value,
+                "lastName": lastNameRef.current.value,
+                "dob": dobRef.current.value,
+                "fatherName": fatherRef.current.value,
+                "motherName": motherRef.current.value,
+                "gender": gender,
+                "maritalStatus": maritalStatus,
+                "spouseName": spouseRef.current.value,
+                "bloodGroup": bg,
+                "poi": poi,
+                "poiNumber": poiNumberRef.current.value,
+                "insuranceCompany": insuranceCompanyRef.current.value,
+                "organizationName": organizationRef.current.value,
+                "policyNumber": policyNumberRef.current.value,
+                "healthCardNumber": healthCardNumberRef.current.value,
+                "insuranceValidity": validityRef.current.value,
+                "email": emailRef.current.value,
+                "phone": mobileRef.current.value,
+                "emergencyContact": emergencyContactRef.current.value,
+                "emergencyPerson": emergencyContactPersonRef.current.value,
+                "country": "India",
+                "state": state,
+                "city": cityRef.current.value,
+                "address1": addressLine1Ref.current.value,
+                "address2": addressLine2Ref.current.value,
+                "pincode": pincodeRef.current.value,
+                "registrarID": registrarID,
+                "registrarName": registrarName,
+                "verification": "pending",
+                "imageUrl": url,
+                "registrationDate": `${newDate.getFullYear()}${'-'}${newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : `${newDate.getMonth() + 1}`}${'-'}${newDate.getDate()}`
+            }
+            addRegistration(data);
+        });
     }
 
 
@@ -153,7 +155,9 @@ export default function PatientRegistration() {
                         setImgSrc("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg")
                     }
                     else if (reg == "new-registration") {
+                        const uploadTask = await storage.ref(`/`).child(random + '.jpeg').putString(imageSrc.slice(23), 'base64', { contentType: 'image/jpeg' });
                         updateFacialRecords(res.data)
+
                     }
                 })
 
@@ -172,7 +176,6 @@ export default function PatientRegistration() {
     };
 
     const handleOTPVerify = () => {
-
     }
 
     const handleGenderChange = (event) => {
@@ -210,6 +213,9 @@ export default function PatientRegistration() {
         <div className="container-registration">
             <img src={Logo} alt="navbar" className="navbar-image" />
             <div className="navbar-registration">
+                {/* <Typography style={{ marginRight: "50rem", marginLeft: "0.5rem" }}>
+                    Registrar
+                </Typography> */}
                 <AccountCircleIcon />
                 <Typography style={{ marginRight: "2.5rem", marginLeft: "0.5rem" }}>
                     {registrarName}
@@ -254,7 +260,7 @@ export default function PatientRegistration() {
                             <Grid container item xs={6}>
                                 <TextField
                                     variant="outlined"
-                                    required
+
                                     fullWidth
                                     id="aadhar-no"
                                     label="Aadhar Number"
@@ -266,7 +272,7 @@ export default function PatientRegistration() {
                             <Grid container item xs={6}>
                                 <TextField
                                     variant="outlined"
-                                    required
+
                                     fullWidth
                                     id="otp"
                                     label="OTP"
@@ -290,7 +296,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="First Name"
                                         size="small"
@@ -309,7 +315,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Last Name"
                                         size="small"
@@ -319,7 +325,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Date of Birth"
                                         type="date"
@@ -334,7 +340,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Father's Name"
                                         size="small"
@@ -344,7 +350,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Mother's Name"
                                         size="small"
@@ -380,7 +386,7 @@ export default function PatientRegistration() {
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
-                                    <FormControl variant="outlined" fullWidth size="small" required>
+                                    <FormControl variant="outlined" fullWidth size="small" >
                                         <InputLabel id="blood-group">Blood Group</InputLabel>
                                         <Select
                                             labelId="blood-group"
@@ -404,7 +410,7 @@ export default function PatientRegistration() {
                                     </FormControl>
                                 </Grid>
                                 <Grid container item xs={4}>
-                                    <FormControl variant="outlined" fullWidth size="small" required>
+                                    <FormControl variant="outlined" fullWidth size="small" >
                                         <InputLabel id="proof-of-identity">Proof of Identity</InputLabel>
                                         <Select
                                             labelId="proof-of-identity"
@@ -429,7 +435,7 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        required
+
                                         label="Proof of Identity Number"
                                         inputRef={poiNumberRef}
                                         size="small"
@@ -446,7 +452,7 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        required
+
                                         label="Insurance Company Name"
                                         inputRef={insuranceCompanyRef}
                                         size="small"
@@ -465,7 +471,7 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        required
+
                                         label="Policy Number"
                                         inputRef={policyNumberRef}
                                         size="small"
@@ -475,7 +481,7 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        required
+
                                         label="Health Card Number"
                                         inputRef={healthCardNumberRef}
                                         size="small"
@@ -484,7 +490,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Insurance Validity"
                                         type="date"
@@ -506,7 +512,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Email"
                                         size="small"
@@ -516,7 +522,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Mobile Number"
                                         size="small"
@@ -527,7 +533,7 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        required
+
                                         label="Emergency Contact Number"
                                         size="small"
                                         inputRef={emergencyContactRef}
@@ -537,7 +543,7 @@ export default function PatientRegistration() {
                                     <TextField
                                         variant="outlined"
                                         fullWidth
-                                        required
+
                                         label="Emergency Contact Person"
                                         size="small"
                                         inputRef={emergencyContactPersonRef}
@@ -546,7 +552,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         disabled
                                         fullWidth
                                         value="India"
@@ -554,7 +560,7 @@ export default function PatientRegistration() {
                                     />
                                 </Grid>
                                 <Grid container item xs={4}>
-                                    <FormControl variant="outlined" fullWidth required size="small">
+                                    <FormControl variant="outlined" fullWidth size="small">
                                         <InputLabel id="select-state">State / UT</InputLabel>
                                         <Select
                                             labelId="select-state"
@@ -573,7 +579,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="City"
                                         size="small"
@@ -583,7 +589,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Flat No./House No./Door/Block No."
                                         size="small"
@@ -593,7 +599,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="Road / Street / Lane"
                                         size="small"
@@ -603,7 +609,7 @@ export default function PatientRegistration() {
                                 <Grid container item xs={4}>
                                     <TextField
                                         variant="outlined"
-                                        required
+
                                         fullWidth
                                         label="PIN Code / ZIP Code"
                                         size="small"
@@ -612,7 +618,7 @@ export default function PatientRegistration() {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Button type="submit" variant="contained" color="primary" size="large" style={{ position: "relative", top: "6rem" }}>
+                        <Button onClick={handleRegister} variant="contained" color="primary" size="large" style={{ position: "relative", top: "6rem" }}>
                             Register
                         </Button>
                     </form>
