@@ -16,7 +16,6 @@ import { fetchRegistrationRecords, getRecord } from "../../contexts/FirebaseData
 import { fetchVerifierData } from "../../contexts/FirestoreContext";
 import { useAuth } from "../../contexts/AuthContext";
 
-
 import UserDetail from '../userDetails/UserDetail';
 
 function TabPanel(props) {
@@ -298,7 +297,7 @@ export default function RegistrationList() {
                                 <Button style={{ borderRadius: "40%", marginLeft: "55rem" }}><CloseIcon onClick={handleClose} /></Button>
                             </DialogTitle>
                             <DialogContent style={{ backgroundColor: "#F2F5F9" }}>
-                                <UserDetail data={record} />
+                                <UserDetail data={record} status={open} statusFunc={setOpen} />
                             </DialogContent>
                         </Dialog>
                     </div>

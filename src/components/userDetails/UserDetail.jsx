@@ -3,13 +3,37 @@ import './userDetail.css';
 import { updateStatus } from "../../contexts/FirebaseDatabaseContext.js"
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import { Avatar, Grid, Paper, Typography, Button, List, ListItem, ListItemText } from '@material-ui/core';
+import CreateUser from "../../contexts/CreateNewUserContext";
+import axios from 'axios';
+
 
 export default function UserDetail(props) {
     const approve = async () => {
         await updateStatus(props.data.uid, 'approved');
+        const password = await CreateUser(props.data.email);
+        console.log(password);
+        // Send E-mail
+        axios.post(
+            "https://stormy-falls-67781.herokuapp.com/mail",
+            {
+                "email": props.data.email,
+                "message": "Dear " + props.data.firstName + ",\nYour data has been verified by the authorities. Your Patient ID is PID. You can login using:\nEmail: " + props.data.email + "\nPassoword: " + password,
+                "subject": "Patient ID Verified"
+            }, {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+            }
+        }
+        )
+            .then(async (res) => {
+                console.log(res.status);
+            })
+        props.statusFunc(false);
     };
     const reject = async () => {
         await updateStatus(props.data.uid, 'rejected');
+        props.statusFunc(false);
     };
     const userImg = "";
     return (
@@ -233,17 +257,32 @@ export default function UserDetail(props) {
                         </Paper>
                     </Grid>
                 </Grid>
+                {props.data.verification == "rejected" ?
 
-                <Grid container item xs={4} id="user-detail-personal">
-                    <Button onClick={approve} variant="contained" color="primary" size="large" style={{ position: "relative", left: "32rem" }}>
-                        Approve
+                    <Grid container item xs={4} id="user-detail-personal">
+                        <Button onClick={approve} variant="contained" color="primary" size="large" style={{ position: "relative", left: "32rem" }}>
+                            Approve
                         </Button>
-                    <Button onClick={reject} variant="contained" color="primary" size="large" style={{ position: "relative", left: "34rem" }}>
-                        Reject
-                        </Button>
-                </Grid>
+                    </Grid>
+                    :
+                    props.data.verification == "approved" ?
+                        <div>
+                        </div> :
+                        <Grid container item xs={4} id="user-detail-personal">
+                            <Button onClick={approve} variant="contained" color="primary" size="large" style={{ position: "relative", left: "25rem" }}>
+                                Approve
+                    </Button>
+                            <Button onClick={reject} variant="contained" color="secondary" size="large" style={{ position: "relative", left: "34rem" }}>
+                                Reject
+                    </Button>
+                        </Grid>
+
+
+                }
+
+
             </Grid>
 
-        </div>
+        </div >
     )
 }
