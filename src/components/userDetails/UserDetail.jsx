@@ -3,33 +3,51 @@ import './userDetail.css';
 import { updateStatus } from "../../contexts/FirebaseDatabaseContext.js"
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import { Avatar, Grid, Paper, Typography, Button, List, ListItem, ListItemText } from '@material-ui/core';
-import CreateUser from "../../contexts/CreateNewUserContext";
 import axios from 'axios';
+import { auth } from "../../components/firebase"
+import { createPatientIDUID } from "../../contexts/FirestoreContext";
 
 
 export default function UserDetail(props) {
+    const [random, setRandom] = useState(Math.floor(100000000000 + Math.random() * 900000000000));
+
+    function generatePassword(length) {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
     const approve = async () => {
         await updateStatus(props.data.uid, 'approved');
-        const password = await CreateUser(props.data.email);
-        console.log(password);
-        // Send E-mail
-        axios.post(
-            "https://stormy-falls-67781.herokuapp.com/mail",
-            {
-                "email": props.data.email,
-                "message": "Dear " + props.data.firstName + ",\nYour data has been verified by the authorities. Your Patient ID is PID. You can login using:\nEmail: " + props.data.email + "\nPassoword: " + password,
-                "subject": "Patient ID Verified"
-            }, {
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
+        const password = generatePassword(10);
+        await auth.createUserWithEmailAndPassword(props.data.email, password).then(async (userCredentials) => {
+            console.log(userCredentials.user.X.X);
+            createPatientIDUID(random, userCredentials.user.X.X, props.data)
+            axios.post(
+                "https://stormy-falls-67781.herokuapp.com/mail",
+                {
+                    "email": props.data.email,
+                    "message": "Dear " + props.data.firstName + ",\nYour data has been verified by the authorities. Your Patient ID is PID. You can login using:\nEmail: " + props.data.email + "\nPassoword: " + password + ".\nYour Unique Patient Identification Number is " + random + ".",
+                    "subject": "Patient ID Verified"
+                }, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                }
             }
-        }
-        )
-            .then(async (res) => {
-                console.log(res.status);
-            })
-        props.statusFunc(false);
+            )
+                .then(async (res) => {
+                    if (res.status == 200) {
+                        console.log("User Created")
+                    }
+                })
+            props.statusFunc(false);
+
+        })
     };
     const reject = async () => {
         await updateStatus(props.data.uid, 'rejected');

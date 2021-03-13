@@ -19,6 +19,19 @@ export const checkUser = async (value) => {
     }
 }
 
+export const createPatientIDUID = async (id, uid, data) => {
+    console.log(id);
+    console.log(uid);
+    try {
+        const iduidRef = await db.collection('patientIDUID').doc(id.toString()).set({ "uid": uid.toString() });
+        const uiddataRef = await db.collection('patients').doc(uid.toString()).set(data);
+
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
 export const fetchRegistrarData = async (value) => {
     const uidRef = db.collection('registrars').doc(value);
     const doc = await uidRef.get()
