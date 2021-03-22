@@ -51,6 +51,7 @@ export default function PatientRegistration() {
     const [error, setError] = useState("")
     const [open, setOpen] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [faceSuccess, setFaceSuccess] = useState(false);
     const [registrarName, setRegistrarName] = useState("")
     const [registrarID, setRegistrarID] = useState("")
     const [gender, setGender] = useState('female');
@@ -157,6 +158,7 @@ export default function PatientRegistration() {
                         setImgSrc("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg")
                     }
                     else if (reg == "new-registration") {
+                        handleFaceSuccessOpen();
                         const uploadTask = await storage.ref(`/`).child(random + '.jpeg').putString(imageSrc.slice(23), 'base64', { contentType: 'image/jpeg' });
                         updateFacialRecords(res.data)
 
@@ -183,6 +185,14 @@ export default function PatientRegistration() {
 
     const handleSuccessClose = () => {
         setSuccess(false);
+    }
+
+    const handleFaceSuccessOpen = () => {
+        setFaceSuccess(true);
+    }
+
+    const handleFaceSuccessClose = () => {
+        setFaceSuccess(false);
     }
 
     const handleOTPVerify = () => {
@@ -267,34 +277,13 @@ export default function PatientRegistration() {
                     </Typography>
                     <form onSubmit={handleOTPVerify}>
                         <Grid container spacing={6}>
-                            <Grid container item xs={6}>
-                                <TextField
-                                    variant="outlined"
-
-                                    fullWidth
-                                    id="aadhar-no"
-                                    label="Aadhar Number"
-                                    name="aadhar"
-                                    size="small"
-                                    inputRef={aadharRef}
-                                />
+                            <Grid container item xs={20}>
+                                <Typography variant="h6" style={{ margin: "1rem", color: "black" }}>
+                                    Add Patient Details in respective fields only after clicking photograph
+                    </Typography>
                             </Grid>
-                            <Grid container item xs={6}>
-                                <TextField
-                                    variant="outlined"
 
-                                    fullWidth
-                                    id="otp"
-                                    label="OTP"
-                                    name="otp"
-                                    size="small"
-                                    inputRef={otpRef}
-                                />
-                            </Grid>
                             <Grid container item xs={6}>
-                                <Button type="submit" variant="contained" color="primary">
-                                    Verify
-                                </Button>
                             </Grid>
                         </Grid>
                     </form>
@@ -628,15 +617,25 @@ export default function PatientRegistration() {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Button onClick={() => {handleSuccessOpen(); handleRegister();}} variant="contained" color="primary" size="large" style={{ position: "relative", top: "6rem" }}>
+                        <Button onClick={async () => { await handleRegister(); await handleSuccessOpen(); }} variant="contained" color="primary" size="large" style={{ position: "relative", top: "6rem" }}>
                             Register
                         </Button>
-                        <Dialog open={success} onClose={handleSuccessClose} aria-labelledby="Success">
+                        <Dialog open={success} onClose={() => { handleSuccessClose(); window.location.reload(); }} aria-labelledby="Success">
                             <DialogContent>
                                 You have successfully registered
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleSuccessClose} color="secondary">
+                                <Button onClick={() => { handleSuccessClose(); window.location.reload(); }} color="secondary">
+                                    Ok
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                        <Dialog open={faceSuccess} onClose={handleFaceSuccessClose} aria-labelledby="Success">
+                            <DialogContent>
+                                Facial Recognition Done! You may now proceed with the rest of the application.
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleFaceSuccessClose} color="secondary">
                                     Ok
                                 </Button>
                             </DialogActions>
@@ -644,6 +643,6 @@ export default function PatientRegistration() {
                     </form>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
