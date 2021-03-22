@@ -50,6 +50,7 @@ export default function PatientRegistration() {
     const [poi, setPoi] = useState();
     const [error, setError] = useState("")
     const [open, setOpen] = useState(false);
+    const [success, setSuccess] = useState(false);
     const [registrarName, setRegistrarName] = useState("")
     const [registrarID, setRegistrarID] = useState("")
     const [gender, setGender] = useState('female');
@@ -125,6 +126,7 @@ export default function PatientRegistration() {
                 "registrationDate": `${newDate.getFullYear()}${'-'}${newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : `${newDate.getMonth() + 1}`}${'-'}${newDate.getDate()}`
             }
             addRegistration(data);
+            setSuccess(false);
         });
     }
 
@@ -174,6 +176,14 @@ export default function PatientRegistration() {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleSuccessOpen = () => {
+        setSuccess(true);
+    }
+
+    const handleSuccessClose = () => {
+        setSuccess(false);
+    }
 
     const handleOTPVerify = () => {
     }
@@ -618,9 +628,19 @@ export default function PatientRegistration() {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Button onClick={handleRegister} variant="contained" color="primary" size="large" style={{ position: "relative", top: "6rem" }}>
+                        <Button onClick={() => {handleSuccessOpen(); handleRegister();}} variant="contained" color="primary" size="large" style={{ position: "relative", top: "6rem" }}>
                             Register
                         </Button>
+                        <Dialog open={success} onClose={handleSuccessClose} aria-labelledby="Success">
+                            <DialogContent>
+                                You have successfully registered
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleSuccessClose} color="secondary">
+                                    Ok
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </form>
                 </div>
             </div>
