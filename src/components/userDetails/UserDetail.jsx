@@ -31,7 +31,7 @@ export default function UserDetail(props) {
                 "https://stormy-falls-67781.herokuapp.com/mail",
                 {
                     "email": props.data.email,
-                    "message": "Dear " + props.data.firstName + ",\nYour data has been verified by the authorities. Your Patient ID is PID. You can login using:\nEmail: " + props.data.email + "\nPassoword: " + password + ".\nYour Unique Patient Identification Number is " + random + ".",
+                    "message": "Dear " + props.data.firstName + ",\nYour data has been verified by the authorities. You can login using:\nEmail: " + props.data.email + "\nPassoword: " + password + ".\nYour Unique Patient Identification Number is " + random + ".",
                     "subject": "Patient ID Verified"
                 }, {
                 headers: {
