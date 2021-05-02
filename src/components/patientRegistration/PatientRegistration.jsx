@@ -145,7 +145,7 @@ export default function PatientRegistration() {
             const formData = new FormData();
             formData.append('file', imageSrc)
             axios.post(
-                "http://0.0.0.0:8080/predict", {
+                "https://facerecog-wyem2wafpq-uc.a.run.app/predict", {
                 data: imageSrc, headers: {
                     'Content-Type': 'multipart/form-data',
                     "Access-Control-Allow-Origin": "*"
