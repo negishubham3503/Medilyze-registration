@@ -7,14 +7,11 @@
     "@material-ui/data-grid": "^4.0.0-alpha.21",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "@tensorflow/tfjs": "^3.2.0",
-    "@tensorflow/tfjs-node": "^3.2.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
     "axios": "^0.21.1",
     "canvas": "^2.6.1",
-    "face-api.js": "^0.22.2",
     "firebase": "^8.2.9",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -25,7 +22,6 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
     "react-webcam": "^5.2.3",
-    "tflite-react-native": "0.0.5",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
